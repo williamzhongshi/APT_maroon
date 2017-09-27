@@ -11,6 +11,9 @@ handlers:
 - url: /bootstrap
   static_dir: bootstrap
 
+- url: /management
+  script: management.app
+
 - url: /.*
   script: login.app
 # [END handlers]
