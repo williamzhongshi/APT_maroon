@@ -22,9 +22,7 @@ import cloudstorage as gcs
 
 from google.appengine.api import app_identity, mail, users
 from google.appengine.ext import ndb
-
 from entities_def import User, Photo, Stream
-
 import jinja2
 import webapp2
 
@@ -42,8 +40,7 @@ def user_key(name):
 
 
 
-
-class Management(webapp2.RequestHandler):
+class show_photos_in_stream(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:
@@ -62,7 +59,7 @@ class Management(webapp2.RequestHandler):
         user_obj.email = 'abc@gmail.com' #users.get_current_user().email()
         user_obj.put()
 
-        template = JINJA_ENVIRONMENT.get_template('management.html')
+        template = JINJA_ENVIRONMENT.get_template('show_photo_in_stream.html')
         self.response.write(template.render(template_values))
 
     def __get_tag(tags):
