@@ -6,6 +6,7 @@ from google.appengine.ext import ndb
 class Photo(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     url = ndb.StringProperty(indexed=True)
+    blob_key = ndb.BlobKeyProperty()
     #photo_id
     #stream = ndb.ReferenceProperty(Stream)
 

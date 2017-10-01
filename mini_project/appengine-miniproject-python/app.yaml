@@ -17,8 +17,14 @@ handlers:
 - url: /create_stream
   script: create_stream.app
 
-- url: /.*
+- url: /
   script: login.app
+
+- url: /blobstore.*
+  script: blob_store_test.app
+
+#- url: /blobstore/serviece
+#  script: blob_store_test.app
 # [END handlers]
 
 # [START libraries]
