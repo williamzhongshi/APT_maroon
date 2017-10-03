@@ -27,55 +27,56 @@
     </header>
    <!-- End of Header area -->
     <div class="container-fluid jumbotron .col-md-offset-*" >
-        <a href="#">Manage</a>
-        <a href="#" >Create</a>
+        <a href="/management">Manage</a>
+        <a href="/create_stream">Create</a>
         <a href="#" >View</a>
         <a href="#" >Search</a>
         <a href="#">Trending</a>
         <a href="#">Social</a>
     </div>
+    <form action="/management" method="post">
+        <div class="container-fluid jumbotron">
+                    <P class="col-lg-11" >Streams I Own:-</P>
+                    <!-- Headings-->
+                    {% for stream in stream %}
+                    <div class="row">
+                        <div >
+                            <div class="col-md-3">
+                                Name
+                            </div>
+                            <div class="col-md-3">
+                                Last New Picture
+                            </div>
+                            <div class="col-md-3">
+                                Number of Pictures
+                            </div>
+                            <div class="col-md-3">
+                                Delete
+                            </div>
+                        </div>
 
-    <div class="container-fluid jumbotron">
-                <P class="col-lg-11" >Streams I Own:-</P>
-                <!-- Headings-->
-                {% for stream in stream %}
-                <div class="row">
-                    <div >
-                        <div class="col-md-3">
-                            Name
-                        </div>
-                        <div class="col-md-3">
-                            Last New Picture
-                        </div>
-                        <div class="col-md-3">
-                            Number of Pictures
-                        </div>
-                        <div class="col-md-3">
-                            Delete
+                        <div>
+                            <div class="col-md-3">
+                                <a href="#">{{ stream.name }}</a>
+                            </div>
+                            <div class="col-md-3">
+                                {{stream.last_picture_date}}
+                            </div>
+                            <div class="col-md-3">{{stream.num_pictures}}</div>
+                            <div class="col-md-3"><input type="checkbox" name="chkDelete" id="chkDelete" value = {{stream.name}}/></div>
                         </div>
                     </div>
-
-                    <div>
-                        <div class="col-md-3">
-                            <a href="#">{{ stream.name }}</a>
-                        </div>
-                        <div class="col-md-3">
-                            {{stream.last_picture_date}}
-                        </div>
-                        <div class="col-md-3">{{stream.num_pictures}}</div>
-                        <div class="col-md-3"><input type="checkbox" id="chkDelete" /></div>
-                    </div>
+                    {% endfor %}
+            <!--<div><input type="submit" class="btn btn-large btn-primary"></div>-->
+            <div>
+                <div class="col-md-12">
+                    <input type="submit" value="Delete Checked Streams"  name="btnDelete" id="btnDelete"  />
+                    <!--<div><input type="submit" class="btn btn-large btn-primary"></div>-->
                 </div>
-                {% endfor %}
-
-        <div>
-            <div class="col-md-12">
-                <input type="button" value="Delete Checked Streams" id="btnDelete" />
             </div>
         </div>
-    </div>
 
-
+    </form>
 
     <!-- Begin Unsubscribe Section -->
 
