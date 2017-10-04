@@ -38,7 +38,6 @@
         <div class="container-fluid jumbotron">
                     <P class="col-lg-11" >Streams I Own:-</P>
                     <!-- Headings-->
-                    {% for stream in stream %}
                     <div class="row">
                         <div >
                             <div class="col-md-3">
@@ -55,6 +54,7 @@
                             </div>
                         </div>
 
+                    {% for stream in stream %}
                         <div>
                             <div class="col-md-3">
                                 <a href="#">{{ stream.name }}</a>
@@ -65,8 +65,8 @@
                             <div class="col-md-3">{{stream.num_pictures}}</div>
                             <div class="col-md-3"><input type="checkbox" name="chkDelete" id="chkDelete" value = {{stream.name}}/></div>
                         </div>
-                    </div>
                     {% endfor %}
+                    </div>
             <!--<div><input type="submit" class="btn btn-large btn-primary"></div>-->
             <div>
                 <div class="col-md-12">
@@ -101,18 +101,19 @@
                     </div>
                 </div>
 
-            <div>
-                
-                    <div class="col-md-3">
-                        <a href="#"><a href="#">The Grateful Dead Berkeley 1969</a></a> 
+                    <div>
+                    {% for stream in stream_subs%}
+                            <div class="col-md-3">
+                                <a href="#">{{ stream.name }}</a>
+                            </div>
+                            <div class="col-md-3">
+                                {{stream.last_picture_date}}
+                            </div>
+                            <div class="col-md-3">{{stream.num_pictures}}</div>
+                            <div class="col-md-3"><input type="checkbox" name="chkDelete" id="chkDelete" value = {{stream.name}}/></div>
+                        </div>
+                    {% endfor %}
                     </div>
-                    <div class="col-md-3">
-                         08/20/2013
-                    </div>
-                    <div class="col-md-2">314</div>
-                    <div class="col-md-2">10M</div>
-                    <div class="col-md-2"><input type="checkbox" id="chkUnsubscribe" /></div>
-                </div>
 
                
             <div>

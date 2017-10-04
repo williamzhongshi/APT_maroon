@@ -104,6 +104,7 @@ class MainPage(webapp2.RequestHandler):
     def get(self):
 
         user = users.get_current_user()
+        logging.info("*************user:" + str(user))
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'

@@ -53,6 +53,9 @@
       <div class="row">
         <!--<b{{ stream.name }}</b>-->
           <!--<b>{{ stream.cover_image}}-->
+          {% for tag in stream.tag  %}
+             {{ tag }}
+          {% endfor %}
           <img src="{{ stream.cover_image }}" alt="{{ stream.name }}" style="width:304px;height:228px;">
       </div>
       {% endfor %}

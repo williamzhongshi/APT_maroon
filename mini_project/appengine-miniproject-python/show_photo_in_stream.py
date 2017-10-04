@@ -55,8 +55,8 @@ class show_photos_in_stream(webapp2.RequestHandler):
 
         # create user
         user_obj = User()
-        user_obj.username ='abc' #users.get_current_user()
-        user_obj.email = 'abc@gmail.com' #users.get_current_user().email()
+        user_obj.username =users.get_current_user()
+        user_obj.email = users.get_current_user().email()
         user_obj.put()
 
         template = JINJA_ENVIRONMENT.get_template('show_photo_in_stream.html')
@@ -80,19 +80,19 @@ class show_photos_in_stream(webapp2.RequestHandler):
         tags = self.request.get('tags')
 
         user_obj = User()
-        user_obj.username ='abc' #users.get_current_user()
-        user_obj.email = 'abc@gmail.com' #users.get_current_user().email()
+        user_obj.username =users.get_current_user()
+        user_obj.email = users.get_current_user().email()
 
-        stream = Stream(parent=user_key('abc'))
+        stream = Stream(parent=user_key(obj.username)
         stream.name = stream_name
         stream.cover_image = pic_url
-        stream.tags = [tags]
-        stream.subs = [subscriber_list]
+        stream.tags = __get_tag.(tags)#[tags]
+        stream.subs = __get_subs(subscriber_list)#[subscriber_list]
 
         stream.put()
 
         # Just try to retrieve from NDB
-        target_query = Stream.query(ancestor = user_key('abc'))
+        target_query = Stream.query(ancestor = user_key(obj.username)
         targets = target_query.fetch(10)
 
         template_values = {

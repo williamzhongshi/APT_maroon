@@ -65,51 +65,71 @@ class Create_Stream(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('create_stream.html')
         self.response.write(template.render(template_values))
 
-    def __get_tag(tags):
-        return __sanitize_str(tags).split(',')
-
-    def __get_subs(subs):
-        return __sanitize_str(subs).split(',')
-
-    def __sanitize_str(s):
+    def __sanitize_str(self, s):
         return s.strip()
 
+    def __get_tag(self, tags):
+        return self.__sanitize_str(tags).split(',')
+
+    def __get_subs(self, subs):
+        return self.__sanitize_str(subs).split(',')
+
     def post(self):
-        user = users.get_current_user()
+        user_obj = User.query(User.email== users.get_current_user().email()).fetch()[0]
 
         stream_name = self.request.get('name')
         subscriber_list = self.request.get('subs')
         pic_url = self.request.get('pic_url')
         tags = self.request.get('tags')
 
-        user_obj = User()
-        user_obj.username = user._User__email
-        user_obj.email = user._User__email
+        origin_stream = Stream.query(Stream.name==stream_name).fetch()
+        logging.info("*******************origin stream: " + str(origin_stream))
+
+        if len(origin_stream) != 0:
+            template_values_none = {}
+            template = JINJA_ENVIRONMENT.get_template('Error.html')
+            self.response.write(template.render(template_values_none))
+            return
 
         stream = Stream(parent=user_key(user_obj.email))
         stream.name = stream_name
         stream.cover_image = pic_url
-        stream.tags = [tags]
-        stream.subs = [subscriber_list]
+        stream.tags = self.__get_tag(tags)
+        stream.subs = self.__get_subs(subscriber_list)
         stream.num_pictures = 0
         stream.put()
+
+        for sub in stream.subs:
+            target_user = User.query(User.email==sub).fetch()
+            if len(target_user) == 0:
+                continue
+            target_user[0].subscribe_stream.append(stream.name)
+            target_user[0].put()
 
         # Just try to retrieve from NDB
         target_query = Stream.query(ancestor=user_key(user_obj.email))
         targets = target_query.fetch(10)
 
+        sub_list = []
+        for subs in user_obj.subscribe_stream:
+            stream_subs = Stream.query(ancestor=user_key(user_obj.email)).fetch(1)
+            if len(stream_subs) == 0:
+                continue
+            sub_list.append(stream_subs[0])
+
+        logging.info(str(sub_list))
+
         template_values = {
             'stream': targets,
+            'stream_subs':sub_list,
         }
 
-        template = JINJA_ENVIRONMENT.get_template('show_stream.html')
+        template = JINJA_ENVIRONMENT.get_template('management.html')
         self.response.write(template.render(template_values))
         
 
 # [START app]
 app = webapp2.WSGIApplication([
-    #('/', MainPage),
     ('/create_stream', Create_Stream)
-    # ('/sign', Guestbook),
 ], debug=True)
 # [END app]
