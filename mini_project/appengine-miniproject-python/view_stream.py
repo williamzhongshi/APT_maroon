@@ -100,7 +100,7 @@ class View_Stream(webapp2.RequestHandler):
 # [START app]
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
-    ('/create_stream', View_Stream)
+    ('/view_stream', View_Stream)
     # ('/sign', Guestbook),
 ], debug=True)
 # [END app]
