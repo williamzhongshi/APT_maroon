@@ -7,6 +7,6 @@ class user:
 
 user_dict = {
 
-    "username
+    "username"
 
 }
