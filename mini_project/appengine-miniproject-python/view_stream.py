@@ -62,7 +62,9 @@ class View_Stream(webapp2.RequestHandler):
         stream_name = self.request.get('name')
         current_stream = Stream.query(Stream.name == stream_name).fetch()
         #Update the view count
-        current_stream.view_count += 1
+        current_count = current_stream.view_count
+        current_count += 1
+        current_stream.view_count = current_count
         current_stream.put()
 
 
@@ -71,7 +73,7 @@ class View_Stream(webapp2.RequestHandler):
         targets = target_query.fetch(4)
 
         template_values = {
-            'images': targets,
+            'photos': targets,
         }
 
         template = JINJA_ENVIRONMENT.get_template('ViewStream.html')
