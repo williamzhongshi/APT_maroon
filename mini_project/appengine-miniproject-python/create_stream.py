@@ -92,6 +92,7 @@ class Create_Stream(webapp2.RequestHandler):
             self.response.write(template.render(template_values_none))
             return
 
+        # TODO add stream name detect and redirect to error page if duplicate found
         stream = Stream(parent=user_key(user_obj.email))
         stream.name = stream_name
         stream.cover_image = pic_url
@@ -104,6 +105,7 @@ class Create_Stream(webapp2.RequestHandler):
             target_user = User.query(User.email==sub).fetch()
             if len(target_user) == 0:
                 continue
+            logging.info("adding stream %s to user %s's subcription list" % (stream.name, target_user[0].email))
             target_user[0].subscribe_stream.append(stream.name)
             target_user[0].put()
 

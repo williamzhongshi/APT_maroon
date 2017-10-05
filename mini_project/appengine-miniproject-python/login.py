@@ -24,6 +24,8 @@ import cloudstorage as gcs
 # from oauth2client.contrib import appengine
 # from googleapiclient import discovery
 
+from entities_def import User
+
 from google.appengine.api import memcache
 from google.appengine.api import app_identity, mail, users
 from google.appengine.ext import ndb
@@ -108,6 +110,15 @@ class MainPage(webapp2.RequestHandler):
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
+            target_user = User.query(User.email == user.email()).fetch()
+
+            if len(target_user) == 0:
+                logging.info("User not found, creating User entity %s" % users.get_current_user().email())
+                logging.info("%s", dir(user))
+                user_obj = User()
+                user_obj.username = user.email()  # not sure what this is for
+                user_obj.email = user.email()
+                user_obj.put()
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login Using Google'

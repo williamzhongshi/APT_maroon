@@ -32,42 +32,41 @@ def user_key(name):
 class Management(webapp2.RequestHandler):
 
     def get(self):
+        logging.info("Management page!!!")
         user = users.get_current_user()
 
-        user_obj = User()
-        user_obj.email = user._User__email
         # print(user._User__email)
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
+
+
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
 
+        user_obj = User.query(User.email== user.email()).fetch()[0]
         target_query = Stream.query(ancestor=user_key(user_obj.email))
-        targets = target_query.fetch(10)
+        targets = target_query.fetch()
 
+        sub_target = []
 
-        # if all_checkboxes:
-        #     logging.info("Checkbox clicked")
-        # else:
-        #     logging.info("Checkbox unchecked")
-        #
-        # if 'chkDelete' in self.request:
-        #     logging.info("Checkbox chedked")
-        # else:
-        #     logging.info("Checkbox not checked")
+        logging.info("User subscribed for %d of streams" % len(user_obj.subscribe_stream))
 
-        # logging.info("hello")
-        # logging.info(dir(targets))
-        # for i in targets:
-        #     print user._User__email, dir(targets)
+        for stream_name in user_obj.subscribe_stream:
+            logging.info("Query for %s in stream names" % stream_name)
+            stream_query = Stream.query(Stream.name == stream_name)
+            # assuming no repeated stream names
+            sub_target.append(stream_query.fetch()[0])
+        for sub in sub_target:
+            logging.info("%s" % sub.name)
 
         template_values = {
             'stream': targets,
+            'stream_subs': sub_target
         }
 
-        template = JINJA_ENVIRONMENT.get_template('Management.html')
+        template = JINJA_ENVIRONMENT.get_template('management.html')
         self.response.write(template.render(template_values))
 
     def post(self):
@@ -110,7 +109,7 @@ class Management(webapp2.RequestHandler):
             'stream': targets,
         }
 
-        template = JINJA_ENVIRONMENT.get_template('Management.html')
+        template = JINJA_ENVIRONMENT.get_template('management.html')
         self.response.write(template.render(template_values))
 
 
