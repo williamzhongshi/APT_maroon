@@ -74,7 +74,7 @@
 
     <!-- Begin Subscribe Section -->
 
-        <form id="frmUpload" action="/view_stream" method="post" >
+        <form id="frmUpload" action="/view_stream" method="post"  enctype="multipart/form-data" >
 
         <div class="container-fluid jumbotron">
                 
@@ -82,13 +82,14 @@
 
             <div>
                 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" id="txtName" placeholder="File Name"/>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                          <input type="text" id="txtComments" placeholder="Comments" />
                     </div>
-                    <div class="col-md-4"><input type="button" value="Upload File" id="btnUpload" /></div>
+                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
+                    <div class="col-md-3"><input type="button" value="Upload File" id="btnUpload" /></div>
                 </div>            
         </div>                
 
