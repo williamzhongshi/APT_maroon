@@ -38,13 +38,18 @@
              <a href="#">Social</a>
         </div>
     </div>
-    <div class="container-fluid jumbotron">
+
+  <div class="container-fluid jumbotron">
                 <!-- Headings-->
                 <div >
+
+                    {% for img in images %}
                     <div class="col-md-2">
-                        <img src="Images/image1.jpg" />
+                        <img src="{{img.url}}" />
                     </div>
-                    <div class="col-md-2">
+                    {% endfor %}
+                    <!--<div class="col-md-2">
+
                        <img src="Images/image2.jpg" />
                     </div>
                     <div class="col-md-2">
@@ -53,7 +58,9 @@
                     <div class="col-md-2">
                         <img src="Images/image1.jpg" />
                     </div>
-                    <div class="col-md-2">
+
+                    <div class="col-md-2"> -->
+
                         &nbsp;
                     </div>
                     <div class="col-md-2">
@@ -61,14 +68,13 @@
                     </div>
                 </div>
 
-                
-                
-        
     </div>
 
 
 
     <!-- Begin Subscribe Section -->
+
+        <form id="frmUpload" action="/view_stream" method="post" >
 
         <div class="container-fluid jumbotron">
                 
@@ -90,6 +96,8 @@
                 <input type="button" value="Subscribe" id="btnSubscribe" />
             </div>
 
+
+        </form>
 
 
       
