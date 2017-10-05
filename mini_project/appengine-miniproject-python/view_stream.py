@@ -20,13 +20,15 @@ import urllib
 import logging
 import cloudstorage as gcs
 
-from google.appengine.api import app_identity, mail, users
+from google.appengine.api import blobstore, users
 from google.appengine.ext import ndb
+from google.appengine.ext.webapp import blobstore_handlers
 
 from entities_def import User, Photo, Stream
 
 import jinja2
 import webapp2
+import logging, pdb
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -62,11 +64,13 @@ class View_Stream(webapp2.RequestHandler):
         stream_name = self.request.get('name')
         current_stream = Stream.query(Stream.name == stream_name).fetch()
         #Update the view count
-        current_count = current_stream.view_count
-        current_count += 1
-        current_stream.view_count = current_count
-        current_stream.put()
+        targets = Stream.query(Stream.name == stream_name).fetch()
 
+        for target in targets:
+            logging.info("Before %d", target.num_pictures)
+            target.num_pictures += 1
+            logging.info("After %d", target.num_pictures)
+            target.put()
 
         # Just try to retrieve from NDB
         target_query = Photo.query(ancestor=stream_name)
@@ -90,16 +94,26 @@ class View_Stream(webapp2.RequestHandler):
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
 
-        # stream = Stream(parent=user_key('abc'))
-        logging.info("Hello")
-        # user_obj = User.query(User.email == user._User__email)
-        # user_obj = User()
-        # user_obj.username = users.get_current_user()
+        try:
+            temp_stream_name = "Labrador"
+            upload = self.get_uploads()[0]
+            # #logging.info("%s", dir(upload))
+            # for i in upload:
+            #     logging.info("%s", dir(i))
+            #     logging.info("Hello %s", i.key())
+            user_email = users.get_current_user()._User__email
+            #stream = Stream(parent=user_key(user_obj.email))
+            user_photo = Photo(
+                name=upload.filename,
+                blob_key=upload.key(),
+                parent=stream_key(temp_stream_name)
+            )
+            user_photo.put()
 
-        name = self.request.get('txtName')
+        except Exception as e:
+            logging.error(e)
+            self.error(500)
 
-
-# [START app]
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
     ('/view_stream', View_Stream)
