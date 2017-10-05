@@ -57,12 +57,12 @@ class Create_Stream(webapp2.RequestHandler):
         }
 
         # create user
-        user_obj = User()
-        user_obj.username = user._User__email
-        user_obj.email = user._User__email
-        user_obj.put()
+       # user_obj = User()
+       # user_obj.username = user._User__email
+       # user_obj.email = user._User__email
+       # user_obj.put()
 
-        template = JINJA_ENVIRONMENT.get_template('create_stream.html')
+        template = JINJA_ENVIRONMENT.get_template('CreateStream.html')
         self.response.write(template.render(template_values))
 
     def __sanitize_str(self, s):
@@ -81,6 +81,7 @@ class Create_Stream(webapp2.RequestHandler):
         subscriber_list = self.request.get('subs')
         pic_url = self.request.get('pic_url')
         tags = self.request.get('tags')
+        cover_picture = self.request.get('cover_pic')
 
         origin_stream = Stream.query(Stream.name==stream_name).fetch()
         logging.info("*******************origin stream: " + str(origin_stream))
