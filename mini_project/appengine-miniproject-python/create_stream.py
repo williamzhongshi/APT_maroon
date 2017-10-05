@@ -41,8 +41,6 @@ def user_key(name):
     return ndb.Key('user', name)
 
 
-
-
 class Create_Stream(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -87,12 +85,12 @@ class Create_Stream(webapp2.RequestHandler):
         logging.info("*******************origin stream: " + str(origin_stream))
 
         if len(origin_stream) != 0:
+            logging.info("!! DUPLICATE FOUND, ERROR !!")
             template_values_none = {}
             template = JINJA_ENVIRONMENT.get_template('Error.html')
             self.response.write(template.render(template_values_none))
             return
 
-        # TODO add stream name detect and redirect to error page if duplicate found
         stream = Stream(parent=user_key(user_obj.email))
         stream.name = stream_name
         stream.cover_image = pic_url

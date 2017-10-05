@@ -57,13 +57,13 @@
                     {% for stream in stream %}
                         <div>
                             <div class="col-md-3">
-                                <a href="#">{{ stream.name }}</a>
+                                <a href="/viewstream/{{stream.name}}">{{ stream.name }}</a>
                             </div>
                             <div class="col-md-3">
                                 {{stream.last_picture_date}}
                             </div>
                             <div class="col-md-3">{{stream.num_pictures}}</div>
-                            <div class="col-md-3"><input type="checkbox" name="chkDelete" id="chkDelete" value = {{stream.name}}/></div>
+                            <div class="col-md-3"><input type="checkbox" name="chkDelete" value="{{ stream.name }}"></div>
                         </div>
                     {% endfor %}
                     </div>
@@ -79,7 +79,7 @@
     </form>
 
     <!-- Begin Unsubscribe Section -->
-
+    <form action="/management" method="post">
         <div class="container-fluid jumbotron">
                 <P class="col-lg-11" >Streams I Subscribe To:-</P>
                 <!-- Headings-->
@@ -104,24 +104,24 @@
                     <div>
                     {% for stream in stream_subs%}
                             <div class="col-md-3">
-                                <a href="#">{{ stream.name }}</a>
+                                <a href="/viewstream/{{stream.name}}">{{ stream.name }}</a>
                             </div>
                             <div class="col-md-3">
                                 {{stream.last_picture_date}}
                             </div>
                             <div class="col-md-3">{{stream.num_pictures}}</div>
-                            <div class="col-md-3"><input type="checkbox" name="chkDelete" id="chkDelete" value = {{stream.name}}/></div>
+                            <div class="col-md-3"><input type="checkbox" name="sub_chkDelete" id="sub_chkDelete" value="{{ stream.name }}"/></div>
                         </div>
                     {% endfor %}
                     </div>
 
-               
             <div>
             <div class="col-md-12">
-                <input type="button" value="Unsubscribe Checked Streams" id="btnUnSubscribe" />
+                <!--<input type="button" value="Unsubscribe Checked Streams" id="btnUnSubscribe" />-->
+                <input type="submit" value="Unsubscribe Checked Streams"  name="btnUnSubscribe" id="btnUnSubscribe"  />
             </div>
         </div>                
-
+    </form>
 
 
 
