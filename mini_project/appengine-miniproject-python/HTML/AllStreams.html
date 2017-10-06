@@ -32,76 +32,57 @@
         <div class="main-links">
             <a href="Management.html">Manage</a>
             <a href="CreateStream.html" >Create</a>
-            <a href="AllStreams.html" >View</a>
+            <a href="#" >View</a>
             <a href="SearchStream.html" >Search</a>
             <a href="Trending.html">Trending</a>
              <a href="#">Social</a>
         </div>
     </div>
 
-  <div class="container-fluid jumbotron">
+    <div class="container-fluid jumbotron">
                 <!-- Headings-->
+                <P class="col-lg-11" >View All Streams </P>
                 <div >
-
-                    {% for img in photos %}
-                    <div class="col-md-2">
-                        <img src="{{img.url}}" />
+                    <div class="col-md-3">
+                        <img src="Images/image2.jpg" />
                     </div>
-                    {% endfor %}
-                    <!--<div class="col-md-2">
-
-                       <img src="Images/image2.jpg" />
+                    <div class="col-md-3">
+                       <img src="Images/image3.jpg" />
                     </div>
-                    <div class="col-md-2">
-                        <img src="Images/image3.jpg" />
-                    </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <img src="Images/image1.jpg" />
                     </div>
-
-                    <div class="col-md-2"> -->
-
-                        &nbsp;
-                    </div>
-                    <div class="col-md-2">
-                       <input type="button" id="btnMore" value="More Pictures"/>
+                   <div class="col-md-3">
+                        <img src="Images/image2.jpg" />
                     </div>
                 </div>
+                
+        <div>
+            <div class="col-md-12">&nbsp;</div>
+        </div>
 
+                   <div >
+                    <div class="col-md-3">
+                        <img src="Images/image1.jpg" />
+                    </div>
+                    <div class="col-md-3">
+                       <img src="Images/image2.jpg" />
+                    </div>
+                    <div class="col-md-3">
+                        <img src="Images/image3.jpg" />
+                    </div>
+                       <div class="col-md-3">
+                        <img src="Images/image1.jpg" />
+                    </div>
+                   
+                </div>
+                
+        
     </div>
-
-
-
-    <!-- Begin Subscribe Section -->
-
-        <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
-
-        <div class="container-fluid jumbotron">
-                
-             <P class="col-lg-11" >Add an Image:-</P>
-
-            <div>
-                
-                    <div class="col-md-3">
-                        <input type="text" id="txtName" placeholder="File Name"/>
-                    </div>
-                    <div class="col-md-3">
-                         <input type="text" id="txtComments" placeholder="Comments" />
-                    </div>
-                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
-                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
-                </div>            
-        </div>                
-
-            <div class="col-md-12">
-                <input type="button" value="Subscribe" id="btnSubscribe" />
-            </div>
-
-
-        </form>
 
 
       
 </body>
 </html>
+
 

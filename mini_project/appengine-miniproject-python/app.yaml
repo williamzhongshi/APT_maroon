@@ -20,6 +20,10 @@ handlers:
 - url: /create_stream
   script: create_stream.app
 
+- url: /view_stream.*
+  script: view_stream.app
+
+
 - url: /
   script: login.app
 

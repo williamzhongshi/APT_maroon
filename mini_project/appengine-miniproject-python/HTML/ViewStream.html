@@ -38,18 +38,13 @@
              <a href="#">Social</a>
         </div>
     </div>
-
-  <div class="container-fluid jumbotron">
+    <div class="container-fluid jumbotron">
                 <!-- Headings-->
                 <div >
-
-                    {% for img in photos %}
                     <div class="col-md-2">
-                        <img src="{{img.url}}" />
+                        <img src="Images/image1.jpg" />
                     </div>
-                    {% endfor %}
-                    <!--<div class="col-md-2">
-
+                    <div class="col-md-2">
                        <img src="Images/image2.jpg" />
                     </div>
                     <div class="col-md-2">
@@ -58,9 +53,7 @@
                     <div class="col-md-2">
                         <img src="Images/image1.jpg" />
                     </div>
-
-                    <div class="col-md-2"> -->
-
+                    <div class="col-md-2">
                         &nbsp;
                     </div>
                     <div class="col-md-2">
@@ -68,13 +61,14 @@
                     </div>
                 </div>
 
+                
+                
+        
     </div>
 
 
 
     <!-- Begin Subscribe Section -->
-
-        <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
 
         <div class="container-fluid jumbotron">
                 
@@ -82,14 +76,13 @@
 
             <div>
                 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <input type="text" id="txtName" placeholder="File Name"/>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                          <input type="text" id="txtComments" placeholder="Comments" />
                     </div>
-                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
-                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
+                    <div class="col-md-4"><input type="button" value="Upload File" id="btnUpload" /></div>
                 </div>            
         </div>                
 
@@ -97,8 +90,6 @@
                 <input type="button" value="Subscribe" id="btnSubscribe" />
             </div>
 
-
-        </form>
 
 
       

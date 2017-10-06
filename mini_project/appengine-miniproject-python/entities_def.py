@@ -4,6 +4,10 @@ class Photo(ndb.Model):
     name = ndb.StringProperty(indexed=True)
     url = ndb.StringProperty(indexed=True)
     blob_key = ndb.BlobKeyProperty()
+    comment = ndb.StringProperty(indexed=False)
+    uploaddate = ndb.DateTimeProperty(auto_now_add=True)
+
+
 
 class User(ndb.Expando):
     username = ndb.StringProperty(indexed=True)
