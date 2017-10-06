@@ -35,7 +35,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-
+stream_name = None
 # [END imports]
 def user_key(name):
     """Constructs a Datastore key for a Guestbook entity.
@@ -56,17 +56,13 @@ class View_Stream(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
 
-        stream_name = self.request.get('name')
-        subscriber_list = self.request.get('subs')
-        pic_url = self.request.get('pic_url')
-        tags = self.request.get('tags')
-
         user_obj = User()
         #user_obj.username = user._User__email
         user_obj.email = user._User__email
 
         #stream = Stream(parent=user_key(user.email))
         stream_name = self.request.get('name')
+
         current_stream = Stream.query(Stream.name == stream_name).fetch()
         #Update the view count
         targets = Stream.query(Stream.name == stream_name, ancestor=user_key(user_obj.email)).fetch()
@@ -86,6 +82,7 @@ class View_Stream(webapp2.RequestHandler):
         template_values = {
             'photos': targets,
             'upload_url': upload_url,
+            'stream_name': stream_name
         }
 
         template = JINJA_ENVIRONMENT.get_template('ViewStream.html')
@@ -104,7 +101,7 @@ class View_Stream(webapp2.RequestHandler):
 class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user = users.get_current_user()
-
+        stream_name = self.request.get('stream_name')
         # print(user._User__email)
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -114,19 +111,23 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             url_linktext = 'Login'
 
         try:
-            temp_stream_name = "Labrador"
-            temp_photo_name = "image1"
+            temp_stream_name = stream_name
+            temp_photo_name = self.request.get("txtName")
+            temp_photo_comment = self.request.get("txtComments")
             upload = self.get_uploads()[0]
             # #logging.info("%s", dir(upload))
             # for i in upload:
             #     logging.info("%s", dir(i))
             #     logging.info("Hello %s", i.key())
-            user_email = users.get_current_user()._User__email
-            stream = Stream(parent=user_key(user_email))
+            logging.info("Uploading to stream %s using name %s with comment %s" % (temp_stream_name, temp_photo_name,
+                                                                                   temp_photo_comment))
+            # user_email = users.get_current_user().email()
+            # stream = Stream(parent=user_key(user_email))
 
             user_photo = Photo(
                 name=temp_photo_name,
                 blob_key=upload.key(),
+                comment=temp_photo_comment,
                 parent=stream_key(temp_stream_name)
             )
             user_photo.put()

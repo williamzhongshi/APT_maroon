@@ -53,7 +53,7 @@ class Trending_cron(webapp2.RequestHandler):
 
         logging.info("************trend:" + email_body)
 
-        send_approved_mail('example@gmail.com', "cheng1024mail@gmail.com", "Team Maroon Trending", email_body)
+        send_approved_mail('williamzhongshi@gmail.com', "williamzhongshi@gmail.com", "Team Maroon Trending", email_body)
         self.response.content_type = 'text/plain'
         self.response.write('Sent an emails.')
 
