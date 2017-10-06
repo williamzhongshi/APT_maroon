@@ -43,41 +43,33 @@
                 <!-- Headings-->
                 <P class="col-lg-11" >View All Streams </P>
                 <div >
-                    <div class="col-md-3">
-                        <img src="Images/image2.jpg" />
-                    </div>
-                    <div class="col-md-3">
-                       <img src="Images/image3.jpg" />
-                    </div>
-                    <div class="col-md-3">
-                        <img src="Images/image1.jpg" />
-                    </div>
-                   <div class="col-md-3">
-                        <img src="Images/image2.jpg" />
-                    </div>
+                    {% for stream in stream %}
+                          <div class="col-md-3">
+                             <a href="#"> <img src="{{ stream.cover_image }}" alt="{{ stream.name }}" style="width:304px;height:228px;"></a>
+                          </div>
+                    {% endfor %}
                 </div>
-                
-        <div>
-            <div class="col-md-12">&nbsp;</div>
-        </div>
 
-                   <div >
-                    <div class="col-md-3">
-                        <img src="Images/image1.jpg" />
-                    </div>
-                    <div class="col-md-3">
-                       <img src="Images/image2.jpg" />
-                    </div>
-                    <div class="col-md-3">
-                        <img src="Images/image3.jpg" />
-                    </div>
-                       <div class="col-md-3">
-                        <img src="Images/image1.jpg" />
-                    </div>
-                   
-                </div>
-                
-        
+        <!--<div>-->
+            <!--<div class="col-md-12">&nbsp;</div>-->
+        <!--</div>-->
+
+                   <!--<div >-->
+                    <!--<div class="col-md-3">-->
+                        <!--<img src="Images/image1.jpg" />-->
+                    <!--</div>-->
+                    <!--<div class="col-md-3">-->
+                       <!--<img src="Images/image2.jpg" />-->
+                    <!--</div>-->
+                    <!--<div class="col-md-3">-->
+                        <!--<img src="Images/image3.jpg" />-->
+                    <!--</div>-->
+                       <!--<div class="col-md-3">-->
+                        <!--<img src="Images/image1.jpg" />-->
+                    <!--</div>-->
+                   <!---->
+                <!--</div>-->
+        <!---->
     </div>
 
 
