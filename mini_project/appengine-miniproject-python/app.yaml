@@ -33,6 +33,9 @@ handlers:
 - url: /view_count*
   script: view_count.app
 
+- url: /create_entity
+  script: create_entity.app
+
 - url: /blobstore.*
   script: blob_store_test.app
 
