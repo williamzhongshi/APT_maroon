@@ -25,11 +25,18 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class Create_Entity(webapp2.RequestHandler):
     def get(self):
         sandy = Stream()
-        sandy.name = 'Dogs'
+        sandy.name = 'Cats'
 
         sandy_key = sandy.put()
 
         self.response.out.write("Entity created")
+
+        photo1 = Photo()
+        photo1.name = "Cat-Image1"
+        photo1.comment = "Comment"
+        photo1_key = photo1.put()
+        self.response.out.write("Photo created")
+
 
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
