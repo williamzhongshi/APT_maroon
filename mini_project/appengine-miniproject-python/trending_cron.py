@@ -35,41 +35,41 @@ class Trending_cron(webapp2.RequestHandler):
 
     def get(self):
 
-        for entity in Trending_stream_entity.query().fetch():
-            entity.key.delete()
-
         streams = Stream.query().fetch()
         
-        logging.info("*************now:" + str(time.time()));
-
         streams_one_hour = []
         now = int(time.time())
 
         for stream in streams:
-            stream.views_ts = filterbyvalue(streams.views_ts, now - 3600)
+            l = stream.views_ts 
+            r = filterbyvalue(l, now - 3600)
+            stream.views_ts = []
+            for e in r:
+                stream.views_ts.append(e)
+
             streams_one_hour.append(stream)
             stream.put()
 
-        sorted(streams_one_hour, key=lambda stream : -len(stream.views_ts))
+        streams_one_hour = sorted(streams_one_hour, key=lambda stream : -len(stream.views_ts))
 
-        for i in range(1, 4)
+        #for s in streams_one_hour:
+            #logging.info("!!!!!!!!!sort" + str(s) + str(len(s.views_ts)))
+
+        for i in range(1, 4):
             trending = Trending_stream_entity()
             trending.stream_item = streams_one_hour[i-1]
             trending.rank = i
+            trending.ts = int(time.time())
             trending.put()
-            logging.info("************trend:" + str(trending))
+
+        trendings = Trending_stream_entity.query().order(-Trending_stream_entity.ts,Trending_stream_entity.rank).fetch(3)
+        #logging.info("********trendings:" + str(trendings))
 
         email_body = "\nTeam Maroom Stream Rank:\n"
-
-        trendings = Trending_stream_entity.query().fetch(3)
-
-
         for trend in trendings:
-            email_body += "\tRank: {} Name {} View count:{}\n".format(trend.rank, trend.stream.name, len(trend.stream.view_ts))
+            email_body += "\tRank: {} Name {} View count:{}\n".format(trend.rank, trend.stream_item.name, len(trend.stream_item.views_ts))
         email_body += "Thanks,\nTeam Maroom\n"
-
-        logging.info("************trend:" + email_body)
-
+        #logging.info("************trend:" + email_body)
         send_approved_mail('example@gmail.com', "cheng1024mail@gmail.com", "Team Maroon Trending", email_body)
         self.response.content_type = 'text/plain'
         self.response.write('Sent an emails.')

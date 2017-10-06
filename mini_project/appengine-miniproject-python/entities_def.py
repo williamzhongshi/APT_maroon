@@ -27,3 +27,4 @@ class Stream(ndb.Model):
 class Trending_stream_entity(ndb.Model):
     stream_item = ndb.StructuredProperty(Stream, repeated=False)
     rank = ndb.IntegerProperty(repeated=False)
+    ts = ndb.IntegerProperty(repeated=False)
