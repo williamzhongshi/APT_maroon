@@ -77,7 +77,7 @@ class View_Stream(webapp2.RequestHandler):
         user_obj.email = user._User__email
 
         #stream = Stream(parent=user_key(user.email))
-        stream_name = self.request.get('name')
+        #stream_name = self.request.get('name')
         #current_stream = Stream.query(Stream.name == stream_name).fetch()
 
         #Update the view count
