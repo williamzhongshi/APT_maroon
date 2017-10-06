@@ -136,12 +136,6 @@ class Management(webapp2.RequestHandler):
             'stream_subs': sub_target
         }
 
-
-        template_values = {
-            'stream': targets,
-            'stream_subs': sub_target
-        }
-
         template = JINJA_ENVIRONMENT.get_template('management.html')
         self.response.write(template.render(template_values))
 

@@ -28,6 +28,7 @@ from google.appengine.api import images
 from entities_def import User, Photo, Stream
 
 import jinja2
+import time
 import webapp2
 import logging, pdb
 
@@ -36,7 +37,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
-
+stream_name = None
 # [END imports]
 def user_key(name):
     """Constructs a Datastore key for a Guestbook entity.
@@ -55,8 +56,21 @@ def stream_key(name):
 
 class View_Stream(webapp2.RequestHandler):
     def get(self):
-        user = users.get_current_user()
+        stream_name = self.request.get('name')
 
+        stream = Stream.query(Stream.name==stream_name).fetch()[0]
+
+        now = int(time.time())
+        if stream.views_ts is None:
+            stream.views_ts = [now]
+        else:
+            stream.views_ts.append(now)
+
+        stream.put()
+
+        logging.info("**********stream:"+ str(stream.views_ts))
+
+        user = users.get_current_user()
 
         user_obj = User()
         #user_obj.username = user._User__email
@@ -67,13 +81,15 @@ class View_Stream(webapp2.RequestHandler):
         #current_stream = Stream.query(Stream.name == stream_name).fetch()
 
         #Update the view count
-        targets = Stream.query(Stream.name == stream_name, ancestor=user_key(user_obj.email)).fetch()
+        logging.info("Stream name: %s" % stream_name)
+        target = Stream.query(Stream.name == stream_name).fetch()[0]
 
-        for target in targets:
-            logging.info("Before %d", target.num_pictures)
-            target.num_pictures += 1
-            logging.info("After %d", target.num_pictures)
-            target.put()
+        if target.view_count is None:
+            target.view_count = 0
+        logging.info("Before %d" % target.view_count)
+        target.view_count += 1
+        logging.info("After %d" % target.view_count)
+        target.put()
 
         # Just try to retrieve from NDB
         target_query = Photo.query(ancestor=stream_key(stream_name))
@@ -84,6 +100,7 @@ class View_Stream(webapp2.RequestHandler):
         template_values = {
             'photos': targets,
             'upload_url': upload_url,
+            'stream_name': stream_name
         }
 
         template = JINJA_ENVIRONMENT.get_template('ViewStream.html')
@@ -122,8 +139,11 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             # for i in upload:
             #     logging.info("%s", dir(i))
             #     logging.info("Hello %s", i.key())
-            user_email = users.get_current_user()._User__email
-            stream = Stream(parent=user_key(user_email))
+            logging.info("Uploading to stream %s using name %s with comment %s" % (temp_stream_name, temp_photo_name,
+                                                                                   temp_photo_comment))
+            # user_email = users.get_current_user().email()
+            # stream = Stream(parent=user_key(user_email))
+
 
             user_photo = Photo(
                 name=photo_name,
@@ -132,7 +152,7 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                 photo_image=avatar
             )
             user_photo.put()
-            self.redirect('/view_stream?name=Labrador')
+            self.redirect('/view_stream?name=%s' % stream_name)
         except Exception as e:
             logging.error(e)
             self.response.out.write(e)

@@ -22,7 +22,9 @@ class Stream(ndb.Model):
     view_count = ndb.IntegerProperty(indexed=True)
     num_pictures = ndb.IntegerProperty()
     last_picture_date = ndb.DateProperty(auto_now=True)
+    views_ts = ndb.IntegerProperty(repeated=True)
 
 class Trending_stream_entity(ndb.Model):
     stream_item = ndb.StructuredProperty(Stream, repeated=False)
     rank = ndb.IntegerProperty(repeated=False)
+    ts = ndb.IntegerProperty(repeated=False)

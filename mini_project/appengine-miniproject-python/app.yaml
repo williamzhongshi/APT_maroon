@@ -30,6 +30,9 @@ handlers:
 - url: /trending_cron
   script: trending_cron.app
 
+- url: /view_count*
+  script: view_count.app
+
 - url: /blobstore.*
   script: blob_store_test.app
 
