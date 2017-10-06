@@ -27,6 +27,7 @@ from google.appengine.ext.webapp import blobstore_handlers
 from entities_def import User, Photo, Stream
 
 import jinja2
+import time
 import webapp2
 import logging, pdb
 
@@ -52,8 +53,23 @@ def stream_key(name):
     """
     return ndb.Key('stream', name)
 
+
 class View_Stream(webapp2.RequestHandler):
     def get(self):
+        stream_name = self.request.get('name')
+
+        stream = Stream.query(Stream.name==stream_name).fetch()[0]
+
+        now = int(time.time())
+        if stream.views_ts is None:
+            stream.views_ts = [now]
+        else:
+            stream.views_ts.append(now)
+
+        stream.put()
+
+        logging.info("**********stream:"+ str(stream.views_ts))
+
         user = users.get_current_user()
 
         user_obj = User()
@@ -68,6 +84,8 @@ class View_Stream(webapp2.RequestHandler):
         logging.info("Stream name: %s" % stream_name)
         target = Stream.query(Stream.name == stream_name).fetch()[0]
 
+        if target.view_count is None:
+            target.view_count = 0
         logging.info("Before %d" % target.view_count)
         target.view_count += 1
         logging.info("After %d" % target.view_count)
