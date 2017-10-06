@@ -1,0 +1,4 @@
+cron:
+- description: daily summary job
+  url: /trending_cron
+  schedule: every 1 mins
