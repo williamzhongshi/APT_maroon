@@ -74,7 +74,7 @@
 
     <!-- Begin Subscribe Section -->
 
-        <form id="frmUpload" action="/view_stream" method="post"  enctype="multipart/form-data" >
+        <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
 
         <div class="container-fluid jumbotron">
                 
@@ -89,7 +89,7 @@
                          <input type="text" id="txtComments" placeholder="Comments" />
                     </div>
                 <div class="col-md-3"> <input type="file" name="file"><br></div>div>
-                    <div class="col-md-3"><input type="button" value="Upload File" id="btnUpload" /></div>
+                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
                 </div>            
         </div>                
 
