@@ -31,9 +31,10 @@ def filterbyvalue(seq, one_hour_before):
    for el in seq:
       if el >= one_hour_before: yield el
 
-class Trending_cron(webapp2.RequestHandler):
+class Trending_cron():
 
-    def get(self):
+    @staticmethod
+    def get():
 
         streams = Stream.query().fetch()
         
@@ -71,9 +72,9 @@ class Trending_cron(webapp2.RequestHandler):
         email_body += "Thanks,\nTeam Maroom\n"
         logging.info("************trend:" + email_body)
 
-        send_approved_mail('williamzhongshi@gmail.com', "williamzhongshi@gmail.com", "Team Maroon Trending", email_body)
-        self.response.content_type = 'text/plain'
-        self.response.write('Sent an emails.')
+        send_approved_mail('cheng1024mail@gmail.com', "cheng1024mail@gmail.com", "Team Maroon Trending", email_body)
+        #self.response.content_type = 'text/plain'
+        #self.response.write('Sent an emails.')
 
 app = webapp2.WSGIApplication([
     ('/trending_cron', Trending_cron)

@@ -30,11 +30,11 @@
 
     <div class="container-fluid jumbotron .col-md-offset-* " >
         <div class="main-links">
-            <a href="Management.html">Manage</a>
-            <a href="CreateStream.html" >Create</a>
-            <a href="AllStreams.html" >View</a>
-            <a href="SearchStream.html" >Search</a>
-            <a href="#">Trending</a>
+            <a href="management">Manage</a>
+            <a href="create_stream" >Create</a>
+            <a href="all_stream" >View</a>
+            <a href="searchstream" >Search</a>
+            <a href="trending">Trending</a>
              <a href="#">Social</a>
         </div>
     </div>
@@ -49,32 +49,26 @@
              &nbsp;
         </div>
         
+                    {% for s in streams  %}
                     <div class="col-md-3">
-                        <a href="#"><img src="Images/image1.jpg" /></a>
+                        <a href="view_stream?name={{ s.name }}"><img src="{{ s.cover_image }}" style="width:304px;height:228px;" /></a>
                         <div>&nbsp;</div>
-                        <div>1234 Views in the past hour</div>
+                        <div>{{ (s.view_count) }} Views in the past hour</div>
                     </div>
-                    <div class="col-md-3">
-                       <a href="#"><img src="Images/image2.jpg" /></a>
-                        <div>&nbsp;</div>
-                        <div> 600 Views in the past hour</div>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="#"><img src="Images/image3.jpg" /></a>
-                        <div>&nbsp;</div>
-                        <div>789 Views in the past hour</div>
-                    </div>
+                    {% endfor %}
 
+                    <form action="/trending" method="post">
                     <div class="col-md-3">
                         <table>
-                        <tr><td><input type="checkbox" id="chk1" /> No Reports</td></tr>
-                        <tr><td><input type="checkbox" id="chk2" /> Every 5 Minutes</td></tr>
-                        <tr><td><input type="checkbox" id="chk3" /> Every 1 Hour</td></tr>
-                        <tr><td><input type="checkbox" id="chk4" /> Every Day</td></tr>
+                        <tr><td><input type="checkbox" id="chk1" name="frequency" value="noreports" /> No Reports</td></tr>
+                        <tr><td><input type="checkbox" id="chk2" name="frequency" value="min5"/> Every 5 Minutes</td></tr>
+                        <tr><td><input type="checkbox" id="chk3" name="frequency" value="hour1"/> Every 1 Hour</td></tr>
+                        <tr><td><input type="checkbox" id="chk4" name="frequency" value="day1"/> Every Day</td></tr>
                         <tr><td>Email Trending Report</td></tr>
-                        <tr><td><input type="button" value="Update Rate" id="btnUpdate" /></td></tr>
+                        <tr><td><input type="submit" value="Update Rate" id="btnUpdate" /></td></tr>
                         </table>
                     </div>
+                    </form>
       </div>
 </body>
 </html>

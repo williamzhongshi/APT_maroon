@@ -20,9 +20,20 @@ handlers:
 - url: /create_stream
   script: create_stream.app
 
+- url: /trending*
+  script: trending.app
+
 - url: /view_stream.*
   script: view_stream.app
 
+- url: /min5_cron
+  script: min5_cron.app
+
+- url: /hour1_cron
+  script: hour1_cron.app
+
+- url: /hour24_cron
+  script: hour24_cron.app
 
 - url: /
   script: login.app
