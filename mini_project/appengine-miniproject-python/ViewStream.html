@@ -45,7 +45,7 @@
 
                     {% for img in photos %}
                     <div class="col-md-2">
-                        <img src="{{img.url}}" />
+                        <img src="image?img_id{{img.url}}" />
                     </div>
                     {% endfor %}
                     <!--<div class="col-md-2">
@@ -88,9 +88,10 @@
                     <div class="col-md-3">
                          <input type="text" id="txtComments" placeholder="Comments" />
                     </div>
-                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
+                <div class="col-md-3"> <input type="file" name="img"/></div>
                     <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
-                </div>            
+                </div>
+                <input type="hidden" name="txtStream" />
         </div>                
 
             <div class="col-md-12">
