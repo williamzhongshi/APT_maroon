@@ -32,6 +32,9 @@ handlers:
 - url: /searchstream.*
   script: search_stream.app
 
+- url: /all_stream.*
+  script: all_stream.app
+
 #- url: /blobstore/serviece
 #  script: blob_store_test.app
 # [END handlers]
