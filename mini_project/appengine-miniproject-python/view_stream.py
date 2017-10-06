@@ -92,10 +92,11 @@ class View_Stream(webapp2.RequestHandler):
         target.put()
 
         # Just try to retrieve from NDB
-        target_query = Photo.query(ancestor=stream_key(stream_name))
-        targets = target_query.fetch(4)
+        targets = Photo.query().fetch(4)
 
-        upload_url = blobstore.create_upload_url('/view_stream/upload')
+
+        #upload_url = blobstore.create_upload_url('/view_stream/upload')
+        upload_url = '/view_stream/upload'
 
         template_values = {
             'photos': targets,
@@ -131,6 +132,7 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         try:
             stream_name = self.request.get("txtStream")
             photo_name = self.request.get("txtName")
+            photo_comment = self.request.get("txtComments")
             #upload = self.get_uploads()[0]
 
             avatar = self.request.get('img')
@@ -139,16 +141,16 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             # for i in upload:
             #     logging.info("%s", dir(i))
             #     logging.info("Hello %s", i.key())
-            logging.info("Uploading to stream %s using name %s with comment %s" % (temp_stream_name, temp_photo_name,
-                                                                                   temp_photo_comment))
+            logging.info("Uploading to stream %s using name %s with comment %s" % (stream_name, photo_name,
+                                                                                   photo_comment))
             # user_email = users.get_current_user().email()
             # stream = Stream(parent=user_key(user_email))
 
 
             user_photo = Photo(
                 name=photo_name,
-                blob_key=avatar.key(),
-                parent=stream_key(stream_name),
+                #blob_key=avatar.key(),
+                #parent=stream_key(stream_name),
                 photo_image=avatar
             )
             user_photo.put()
