@@ -22,11 +22,19 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     autoescape=True)
 
 
+class Create_Entity(webapp2.RequestHandler):
+    def get(self):
+        sandy = Stream()
+        sandy.name = 'Dogs'
+        sandy.tags = 'Dogs, puppy'
+        sandy_key = sandy.put()
 
-sandy = Stream()
-sandy.name = 'Dogs'
-sandy.tags = 'Dogs, puppy'
-sandy_key = sandy.put()
+        self.response.out.write("Entity created")
 
+app = webapp2.WSGIApplication([
+    # ('/', MainPage),
+    ('/create_entity', Create_Entity),
+    # ('/sign', Guestbook),
+], debug=True)
 
 
