@@ -23,6 +23,9 @@ handlers:
 - url: /
   script: login.app
 
+- url: /trending_cron
+  script: trending_cron.app
+
 - url: /blobstore.*
   script: blob_store_test.app
 
