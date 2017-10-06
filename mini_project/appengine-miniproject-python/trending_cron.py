@@ -69,8 +69,9 @@ class Trending_cron(webapp2.RequestHandler):
         for trend in trendings:
             email_body += "\tRank: {} Name {} View count:{}\n".format(trend.rank, trend.stream_item.name, len(trend.stream_item.views_ts))
         email_body += "Thanks,\nTeam Maroom\n"
-        #logging.info("************trend:" + email_body)
-        send_approved_mail('example@gmail.com', "cheng1024mail@gmail.com", "Team Maroon Trending", email_body)
+        logging.info("************trend:" + email_body)
+
+        send_approved_mail('williamzhongshi@gmail.com', "williamzhongshi@gmail.com", "Team Maroon Trending", email_body)
         self.response.content_type = 'text/plain'
         self.response.write('Sent an emails.')
 

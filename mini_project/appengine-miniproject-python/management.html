@@ -57,7 +57,7 @@
                     {% for stream in stream %}
                         <div>
                             <div class="col-md-3">
-                                <a href="/viewstream/{{stream.name}}">{{ stream.name }}</a>
+                                <a href="/view_stream?name={{stream.name}}">{{stream.name}}</a>
                             </div>
                             <div class="col-md-3">
                                 {{stream.last_picture_date}}

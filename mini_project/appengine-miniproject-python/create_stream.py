@@ -97,6 +97,7 @@ class Create_Stream(webapp2.RequestHandler):
         stream.tags = self.__get_tag(tags)
         stream.subs = self.__get_subs(subscriber_list)
         stream.num_pictures = 0
+        stream.view_count = 0
         stream.put()
 
         for sub in stream.subs:
@@ -122,7 +123,7 @@ class Create_Stream(webapp2.RequestHandler):
 
         template_values = {
             'stream': targets,
-            'stream_subs':sub_list,
+            'stream_subs': sub_list,
         }
 
         template = JINJA_ENVIRONMENT.get_template('management.html')
