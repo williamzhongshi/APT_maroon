@@ -63,15 +63,15 @@ class View_Stream(webapp2.RequestHandler):
         #stream = Stream(parent=user_key(user.email))
         stream_name = self.request.get('name')
 
-        current_stream = Stream.query(Stream.name == stream_name).fetch()
+        #current_stream = Stream.query(Stream.name == stream_name).fetch()
         #Update the view count
-        targets = Stream.query(Stream.name == stream_name, ancestor=user_key(user_obj.email)).fetch()
+        logging.info("Stream name: %s" % stream_name)
+        target = Stream.query(Stream.name == stream_name).fetch()[0]
 
-        for target in targets:
-            logging.info("Before %d", target.num_pictures)
-            target.num_pictures += 1
-            logging.info("After %d", target.num_pictures)
-            target.put()
+        logging.info("Before %d" % target.view_count)
+        target.view_count += 1
+        logging.info("After %d" % target.view_count)
+        target.put()
 
         # Just try to retrieve from NDB
         target_query = Photo.query(ancestor=stream_key(stream_name))
@@ -112,6 +112,8 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 
         try:
             temp_stream_name = stream_name
+            target = Stream.query(Stream.name == temp_stream_name).fetch()[0]
+
             temp_photo_name = self.request.get("txtName")
             temp_photo_comment = self.request.get("txtComments")
             upload = self.get_uploads()[0]
@@ -124,6 +126,11 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             # user_email = users.get_current_user().email()
             # stream = Stream(parent=user_key(user_email))
 
+            logging.info("Before %d" % target.num_pictures)
+            target.num_pictures += 1
+            logging.info("After %d" % target.num_pictures)
+            target.put()
+
             user_photo = Photo(
                 name=temp_photo_name,
                 blob_key=upload.key(),
@@ -131,7 +138,7 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                 parent=stream_key(temp_stream_name)
             )
             user_photo.put()
-            self.redirect('/view_stream?name=Labrador')
+            self.redirect('/view_stream?name=%s' % stream_name)
         except Exception as e:
             logging.error(e)
             self.response.out.write(e)
