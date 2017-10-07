@@ -57,8 +57,13 @@ def stream_key(name):
 class View_Stream(webapp2.RequestHandler):
     def get(self):
         stream_name = self.request.get('name')
+        offset = self.request.get('offset')
+        offset_int = 0
 
         stream = Stream.query(Stream.name==stream_name).fetch()[0]
+        if offset:
+            offset_int = int(offset)
+
 
         now = int(time.time())
         if stream.views_ts is None:
@@ -92,7 +97,14 @@ class View_Stream(webapp2.RequestHandler):
         target.put()
 
         # Just try to retrieve from NDB
-        targets = Photo.query().fetch(4)
+        targets, next_cursor, more = Photo.query().order(-Photo.uploaddate).fetch_page(4, offset=offset_int)
+        #targets = Photo.query().order(-Photo.uploaddate).fetch(4)
+
+        next_ = True if more else False
+        next_offset = ''
+        if next_:
+            offset = offset_int + 4
+
 
 
         #upload_url = blobstore.create_upload_url('/view_stream/upload')
@@ -101,7 +113,8 @@ class View_Stream(webapp2.RequestHandler):
         template_values = {
             'photos': targets,
             'upload_url': upload_url,
-            'stream_name': stream_name
+            'stream_name': stream_name,
+            'offset': offset,
         }
 
         template = JINJA_ENVIRONMENT.get_template('ViewStream.html')
@@ -133,10 +146,11 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             stream_name = self.request.get("txtStream")
             photo_name = self.request.get("txtName")
             photo_comment = self.request.get("txtComments")
+            offset = self.request.get("txtOffset")
             #upload = self.get_uploads()[0]
 
             avatar = self.request.get('img')
-            avatar = images.resize(avatar, 32, 32)
+
             # #logging.info("%s", dir(upload))
             # for i in upload:
             #     logging.info("%s", dir(i))
@@ -147,14 +161,13 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             # stream = Stream(parent=user_key(user_email))
 
 
-            user_photo = Photo(
-                name=photo_name,
-                #blob_key=avatar.key(),
-                #parent=stream_key(stream_name),
-                photo_image=avatar
-            )
+            user_photo = Photo()
+            user_photo.name = photo_name
+            user_photo.comment = photo_comment
+            user_photo.photo_image = avatar
             user_photo.put()
             self.redirect('/view_stream?name=%s' % stream_name)
+
         except Exception as e:
             logging.error(e)
             self.response.out.write(e)
@@ -162,19 +175,40 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 
 class Image(webapp2.RequestHandler):
     def get(self):
-        photo_key = ndb.Key(urlsafe=self.request.get('img_id'))
-        photo = photo_key.get()
-        if photo.avatar:
+        #photo_key = ndb.Key(urlsafe=self.request.get('img_id'))
+        #photo = photo_key.get()
+
+        photo_id = int(self.request.get('img_id'))
+        photo = Photo.get_by_id(photo_id)
+        #avatar = images.resize(photo.photo_image, 5, 5)
+        if photo.photo_image:
             self.response.headers['Content-Type'] = 'image/png'
-            self.response.out.write(photo.avatar)
+            self.response.out.write(photo.photo_image)
         else:
             self.response.out.write('No image')
+
+class Subscribe(webapp2.RequestHandler):
+    def get(self):
+        sub_stream = self.request.get('stream')
+        user = users.get_current_user()
+
+        # print(user._User__email)
+        if user:
+            target = Stream.query(Stream.name == sub_stream).fetch()[0]
+            id = user.user_id()
+            self.response.out.write(id)
+            target.subscribers.append(id)
+            target.put()
+            self.redirect('/view_stream?name=%s' % sub_stream)
+        else:
+            err_msg = "You are not logged in. Please login to subscribe."
 
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
     ('/view_stream', View_Stream),
     ('/view_stream/upload', PhotoUploadHandler),
     ('/view_stream/image', Image),
+    ('/view_stream/subscribe', Subscribe),
     # ('/sign', Guestbook),
 ], debug=True)
 
