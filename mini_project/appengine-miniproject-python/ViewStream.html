@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head >
     <title>Mini Project</title>
@@ -30,11 +30,11 @@
 
     <div class="container-fluid jumbotron .col-md-offset-* " >
         <div class="main-links">
-            <a href="Management.html">Manage</a>
-            <a href="CreateStream.html" >Create</a>
-            <a href="AllStreams.html" >View</a>
-            <a href="SearchStream.html" >Search</a>
-            <a href="Trending.html">Trending</a>
+            <a href="management">Manage</a>
+            <a href="create_stream" >Create</a>
+            <a href="all_stream" >View</a>
+            <a href="searchstream" >Search</a>
+            <a href="trending">Trending</a>
              <a href="#">Social</a>
         </div>
     </div>
@@ -96,7 +96,7 @@
                 </div>
                 <input type="hidden" name="txtStream"  value="{{ stream_name }}" />
                 <input type="hidden" name="txtOffset"  value="{{ offset }}" />
-        </div>                
+        </div>
 
             <div class="col-md-12">
                 <a href="view_stream/subscribe?stream={{ stream_name }}"><input type="button" value="Subscribe" id="btnSubscribe" /></a>

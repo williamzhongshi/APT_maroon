@@ -84,7 +84,6 @@ class View_Stream(webapp2.RequestHandler):
         #stream = Stream(parent=user_key(user.email))
         #stream_name = self.request.get('name')
         #current_stream = Stream.query(Stream.name == stream_name).fetch()
-
         #Update the view count
         logging.info("Stream name: %s" % stream_name)
         target = Stream.query(Stream.name == stream_name).fetch()[0]
@@ -167,7 +166,6 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             user_photo.photo_image = avatar
             user_photo.put()
             self.redirect('/view_stream?name=%s' % stream_name)
-
         except Exception as e:
             logging.error(e)
             self.response.out.write(e)
