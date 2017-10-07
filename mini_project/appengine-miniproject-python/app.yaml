@@ -53,6 +53,9 @@ handlers:
 - url: /all_stream.*
   script: all_stream.app
 
+- url: /subscribe*
+  script: subscribe.app
+
 #- url: /blobstore/serviece
 #  script: blob_store_test.app
 # [END handlers]
