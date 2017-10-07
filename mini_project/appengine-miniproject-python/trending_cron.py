@@ -74,7 +74,7 @@ class Trending_cron():
         email_body += "Thanks,\nTeam Maroom\n"
         logging.info("************trend:" + email_body)
 
-        send_approved_mail('cheng1024mail@gmail.com', "cheng1024mail@gmail.com", "Team Maroon Trending", email_body)
+        send_approved_mail('williamzhongshi@gmail.com', "ee382vta@gmail.com", "Team Maroon Trending", email_body)
 
 app = webapp2.WSGIApplication([
     ('/trending_cron', Trending_cron)
