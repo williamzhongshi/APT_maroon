@@ -46,7 +46,7 @@
 
                     {% for img in photos %}
                         <div class="col-md-2">
-                            <img src="{{ photos.url }}"style="width:304px;height:228px;">
+                            <img src="{{ img.url }}"style="width:304px;height:228px;">
                             <!--#<img src="{{photos.url}}" />-->
                         </div>
                     {% endfor %}
@@ -77,7 +77,7 @@
     <!-- Begin Subscribe Section -->
 
         <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
-        <input type="text" visible="False" value="{{ stream_name }}"  name= "stream_name">
+        <input type="text" visible="false" value="{{ stream_name }}"  name= "stream_name">
         <div class="container-fluid jumbotron">
                 
              <P class="col-lg-11" >Add an Image:-</P>
