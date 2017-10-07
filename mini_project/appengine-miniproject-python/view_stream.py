@@ -20,9 +20,10 @@ import urllib
 import logging
 import cloudstorage as gcs
 
-from google.appengine.api import users, images
-from google.appengine.ext import ndb, blobstore
+from google.appengine.api import blobstore, users
+from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.api import images
 
 from entities_def import User, Photo, Stream
 
@@ -53,12 +54,16 @@ def stream_key(name):
     """
     return ndb.Key('stream', name)
 
-
 class View_Stream(webapp2.RequestHandler):
     def get(self):
         stream_name = self.request.get('name')
+        offset = self.request.get('offset')
+        offset_int = 0
 
         stream = Stream.query(Stream.name==stream_name).fetch()[0]
+        if offset:
+            offset_int = int(offset)
+
 
         now = int(time.time())
         if stream.views_ts is None:
@@ -77,9 +82,9 @@ class View_Stream(webapp2.RequestHandler):
         user_obj.email = user._User__email
 
         #stream = Stream(parent=user_key(user.email))
-        stream_name = self.request.get('name')
-
+        #stream_name = self.request.get('name')
         #current_stream = Stream.query(Stream.name == stream_name).fetch()
+
         #Update the view count
         logging.info("Stream name: %s" % stream_name)
         target = Stream.query(Stream.name == stream_name).fetch()[0]
@@ -92,29 +97,24 @@ class View_Stream(webapp2.RequestHandler):
         target.put()
 
         # Just try to retrieve from NDB
-        target_query = Photo.query(ancestor=stream_key(stream_name))
-        targets = target_query.fetch(4)
+        targets, next_cursor, more = Photo.query().order(-Photo.uploaddate).fetch_page(4, offset=offset_int)
+        #targets = Photo.query().order(-Photo.uploaddate).fetch(4)
 
-        for i in targets:
-            blob_info = blobstore.get(i.blob_key)
-            if blob_info:
-                # img = images.Image(blob_key=i.blob_key)
-                # img.resize(width=80, height=100)
-                # img.im_feeling_lucky()
-                i.url = str(images.get_serving_url(i.blob_key))
-                logging.info("Image serving url is: %s" % i.url)
-                #logging.info("Image serving url is: %s" % str(i.url))
-                i.put()
+        next_ = True if more else False
+        next_offset = ''
+        if next_:
+            offset = offset_int + 4
 
-        upload_url = blobstore.create_upload_url('/view_stream/upload')
 
-        for target in targets:
-            logging.info("image serving url in target is %s" % target.url)
+
+        #upload_url = blobstore.create_upload_url('/view_stream/upload')
+        upload_url = '/view_stream/upload'
 
         template_values = {
             'photos': targets,
             'upload_url': upload_url,
-            'stream_name': stream_name
+            'stream_name': stream_name,
+            'offset': offset,
         }
 
         template = JINJA_ENVIRONMENT.get_template('ViewStream.html')
@@ -133,7 +133,7 @@ class View_Stream(webapp2.RequestHandler):
 class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user = users.get_current_user()
-        stream_name = self.request.get('stream_name')
+
         # print(user._User__email)
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -143,47 +143,72 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             url_linktext = 'Login'
 
         try:
-            temp_stream_name = stream_name
-            target = Stream.query(Stream.name == temp_stream_name).fetch()[0]
+            stream_name = self.request.get("txtStream")
+            photo_name = self.request.get("txtName")
+            photo_comment = self.request.get("txtComments")
+            offset = self.request.get("txtOffset")
+            #upload = self.get_uploads()[0]
 
-            temp_photo_name = self.request.get("txtName")
-            temp_photo_comment = self.request.get("txtComments")
-            upload = self.get_uploads()[0]
+            avatar = self.request.get('img')
+
             # #logging.info("%s", dir(upload))
             # for i in upload:
             #     logging.info("%s", dir(i))
             #     logging.info("Hello %s", i.key())
-            logging.info("Uploading to stream %s using name %s with comment %s" % (temp_stream_name, temp_photo_name,
-                                                                                   temp_photo_comment))
+            logging.info("Uploading to stream %s using name %s with comment %s" % (stream_name, photo_name,
+                                                                                   photo_comment))
             # user_email = users.get_current_user().email()
             # stream = Stream(parent=user_key(user_email))
 
-            logging.info("Before %d" % target.num_pictures)
-            target.num_pictures += 1
-            logging.info("After %d" % target.num_pictures)
-            target.put()
 
-            user_photo = Photo(
-                name=temp_photo_name,
-                blob_key=upload.key(),
-                comment=temp_photo_comment,
-                parent=stream_key(temp_stream_name),
-                #url=upload.get_serving_url()
-            )
+            user_photo = Photo()
+            user_photo.name = photo_name
+            user_photo.comment = photo_comment
+            user_photo.photo_image = avatar
             user_photo.put()
             self.redirect('/view_stream?name=%s' % stream_name)
+
         except Exception as e:
             logging.error(e)
             self.response.out.write(e)
             #self.error(500)
 
+class Image(webapp2.RequestHandler):
+    def get(self):
+        #photo_key = ndb.Key(urlsafe=self.request.get('img_id'))
+        #photo = photo_key.get()
 
+        photo_id = int(self.request.get('img_id'))
+        photo = Photo.get_by_id(photo_id)
+        #avatar = images.resize(photo.photo_image, 5, 5)
+        if photo.photo_image:
+            self.response.headers['Content-Type'] = 'image/png'
+            self.response.out.write(photo.photo_image)
+        else:
+            self.response.out.write('No image')
+
+class Subscribe(webapp2.RequestHandler):
+    def get(self):
+        sub_stream = self.request.get('stream')
+        user = users.get_current_user()
+
+        # print(user._User__email)
+        if user:
+            target = Stream.query(Stream.name == sub_stream).fetch()[0]
+            id = user.user_id()
+            self.response.out.write(id)
+            target.subscribers.append(id)
+            target.put()
+            self.redirect('/view_stream?name=%s' % sub_stream)
+        else:
+            err_msg = "You are not logged in. Please login to subscribe."
 
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
     ('/view_stream', View_Stream),
     ('/view_stream/upload', PhotoUploadHandler),
-
+    ('/view_stream/image', Image),
+    ('/view_stream/subscribe', Subscribe),
     # ('/sign', Guestbook),
 ], debug=True)
 

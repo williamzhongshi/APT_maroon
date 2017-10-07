@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head >
     <title>Mini Project</title>
@@ -30,11 +30,11 @@
 
     <div class="container-fluid jumbotron .col-md-offset-* " >
         <div class="main-links">
-            <a href="management">Manage</a>
-            <a href="create_stream" >Create</a>
-            <a href="all_stream" >View</a>
-            <a href="searchstream" >Search</a>
-            <a href="trending">Trending</a>
+            <a href="Management.html">Manage</a>
+            <a href="CreateStream.html" >Create</a>
+            <a href="AllStreams.html" >View</a>
+            <a href="SearchStream.html" >Search</a>
+            <a href="Trending.html">Trending</a>
              <a href="#">Social</a>
         </div>
     </div>
@@ -42,14 +42,15 @@
   <div class="container-fluid jumbotron">
                 <!-- Headings-->
                 <div >
-                    <!--<input type="text" visible="True" value="{{name}}" name="stream_name">-->
 
-                    {% for img in photos %}
-                        <div class="col-md-2">
-                            <img src="{{ img.url }}"style="width:304px;height:228px;">
-                            <!--#<img src="{{photos.url}}" />-->
-                        </div>
+                <div >
+                    {% for photo in photos %}
+                          <div class="col-md-3">
+                              <img src="view_stream/image?img_id={{ photo.key.id() }}" alt="{{ photo.name }}" style="width:304px;height:228px;" />
+                          </div>
                     {% endfor %}
+                </div>
+
                     <!--<div class="col-md-2">
 
                        <img src="Images/image2.jpg" />
@@ -65,9 +66,9 @@
 
                         &nbsp;
                     </div>
-                        <div class="col-md-2">
-                            <input type="submit" id="btnMore" value="More Pictures"/>
-                        </div>
+                    <div class="col-md-2">
+                       <a href="view_stream?name={{ stream_name }}&offset={{ offset }}"><input type="button" id="btnMore" value="More Pictures"/></a>
+                    </div>
                 </div>
 
     </div>
@@ -76,8 +77,9 @@
 
     <!-- Begin Subscribe Section -->
 
-        <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
+        <form id="frmUpload" action="{{ upload_url }}" method="post"  enctype="multipart/form-data" >
         <input  type="hidden" value="{{ stream_name }}"  name= "stream_name">
+
         <div class="container-fluid jumbotron">
                 
              <P class="col-lg-11" >Add an Image:-</P>
@@ -90,14 +92,11 @@
                     <div class="col-md-3">
                          <input type="text" name="txtComments" placeholder="Comments" />
                     </div>
-                <!--<div class="col-md-12">-->
-                    <!--<input type="submit" value="Submit"  name="submit" />-->
-                <!--</div>-->
-                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
-
-
-                   <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
+                <div class="col-md-3"> <input type="file" name="img"/></div>
+                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
                 </div>
+                <input type="hidden" name="txtStream"  value="{{ stream_name }}" />
+                <input type="hidden" name="txtOffset"  value="{{ offset }}" />
         </div>                
 
         </form>

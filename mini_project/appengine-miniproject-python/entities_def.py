@@ -6,7 +6,7 @@ class Photo(ndb.Model):
     blob_key = ndb.BlobKeyProperty()
     comment = ndb.StringProperty(indexed=False)
     uploaddate = ndb.DateTimeProperty(auto_now_add=True)
-
+    photo_image = ndb.BlobProperty()
 
 
 class User(ndb.Expando):
