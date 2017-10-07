@@ -100,7 +100,7 @@ class Management(webapp2.RequestHandler):
         for i in check:
             stream_to_delete = i.split('/')
             logging.info("User selected deleting %s", stream_to_delete)
-            found_stream = Stream.query(Stream.name == stream_to_delete, ancestor=user_key(user_obj.email))
+            found_stream = Stream.query(Stream.name == stream_to_delete[0], ancestor=user_key(user_obj.email))
             for j in found_stream.fetch():
                 # TODO, the clean way is to delete pictures too
                 logging.info("Removing stream: %s ", j.name)

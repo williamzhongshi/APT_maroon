@@ -28,3 +28,6 @@ class Trending_stream_entity(ndb.Model):
     stream_item = ndb.StructuredProperty(Stream, repeated=False)
     rank = ndb.IntegerProperty(repeated=False)
     ts = ndb.IntegerProperty(repeated=False)
+
+class CronJobFrequency(ndb.Model):
+    frequency = ndb.StringProperty()
