@@ -46,7 +46,7 @@
                 <div >
                     {% for photo in photos %}
                           <div class="col-md-3">
-                              <img src="image?img_id={{ photo.photo_image }}" alt="{{ photo.name }}" style="width:304px;height:228px;" />
+                              <img src="view_stream/image?img_id={{ photo.key.id() }}" alt="{{ photo.name }}" style="width:304px;height:228px;" />
                           </div>
                     {% endfor %}
                 </div>
@@ -67,7 +67,7 @@
                         &nbsp;
                     </div>
                     <div class="col-md-2">
-                       <input type="button" id="btnMore" value="More Pictures"/>
+                       <a href="view_stream?name={{ stream_name }}&offset={{ offset }}"><input type="button" id="btnMore" value="More Pictures"/></a>
                     </div>
                 </div>
 
@@ -95,10 +95,11 @@
                     <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
                 </div>
                 <input type="hidden" name="txtStream"  value="{{ stream_name }}" />
+                <input type="hidden" name="txtOffset"  value="{{ offset }}" />
         </div>                
 
             <div class="col-md-12">
-                <input type="button" value="Subscribe" id="btnSubscribe" />
+                <a href="view_stream/subscribe?stream={{ stream_name }}"><input type="button" value="Subscribe" id="btnSubscribe" /></a>
             </div>
 
 
