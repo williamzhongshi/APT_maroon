@@ -20,8 +20,8 @@ import urllib
 import logging
 import cloudstorage as gcs
 
-from google.appengine.api import blobstore, users
-from google.appengine.ext import ndb
+from google.appengine.api import users, images
+from google.appengine.ext import ndb, blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 
 from entities_def import User, Photo, Stream
@@ -95,7 +95,21 @@ class View_Stream(webapp2.RequestHandler):
         target_query = Photo.query(ancestor=stream_key(stream_name))
         targets = target_query.fetch(4)
 
+        for i in targets:
+            blob_info = blobstore.get(i.blob_key)
+            if blob_info:
+                # img = images.Image(blob_key=i.blob_key)
+                # img.resize(width=80, height=100)
+                # img.im_feeling_lucky()
+                i.url = str(images.get_serving_url(i.blob_key))
+                logging.info("Image serving url is: %s" % i.url)
+                #logging.info("Image serving url is: %s" % str(i.url))
+                i.put()
+
         upload_url = blobstore.create_upload_url('/view_stream/upload')
+
+        for target in targets:
+            logging.info("image serving url in target is %s" % target.url)
 
         template_values = {
             'photos': targets,
@@ -153,7 +167,8 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                 name=temp_photo_name,
                 blob_key=upload.key(),
                 comment=temp_photo_comment,
-                parent=stream_key(temp_stream_name)
+                parent=stream_key(temp_stream_name),
+                #url=upload.get_serving_url()
             )
             user_photo.put()
             self.redirect('/view_stream?name=%s' % stream_name)
