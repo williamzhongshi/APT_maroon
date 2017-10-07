@@ -63,6 +63,8 @@ class Trending_cron():
             trending.ts = int(time.time())
             trending.put()
 
+    @staticmethod
+    def send():
         trendings = Trending_stream_entity.query().order(-Trending_stream_entity.ts,Trending_stream_entity.rank).fetch(3)
         #logging.info("********trendings:" + str(trendings))
 
@@ -73,8 +75,6 @@ class Trending_cron():
         logging.info("************trend:" + email_body)
 
         send_approved_mail('cheng1024mail@gmail.com', "cheng1024mail@gmail.com", "Team Maroon Trending", email_body)
-        #self.response.content_type = 'text/plain'
-        #self.response.write('Sent an emails.')
 
 app = webapp2.WSGIApplication([
     ('/trending_cron', Trending_cron)

@@ -27,7 +27,7 @@ class Hour1Cron(webapp2.RequestHandler):
         logging.info("**********crondb"+ str(freq))
         for f in freq:
             if f.frequency == "hour1":
-                Trending_cron.get()
+                Trending_cron.send()
 
 app = webapp2.WSGIApplication([
     ('/hour1_cron', Hour1Cron)
