@@ -44,10 +44,11 @@
                 <div >
 
                 <div >
-                    {% for photo in photos %}
-                          <div class="col-md-3">
-                              <img src="view_stream/image?img_id={{ photo.key.id() }}" alt="{{ photo.name }}" style="width:304px;height:228px;" />
-                          </div>
+                    {% for img in photos %}
+                        <div class="col-md-2">
+                            <img src="{{ img.url }}"style="width:304px;height:228px;">
+                            <!--#<img src="{{photos.url}}" />-->
+                        </div>
                     {% endfor %}
                 </div>
 

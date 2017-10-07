@@ -49,7 +49,7 @@ class All_Stream(webapp2.RequestHandler):
         targets = target_query.fetch()
 
         for s in targets:
-            logging.info("*********picture:"+ s.cover_image)
+            logging.info("*********picture: %s " % s.cover_image)
 
         template_values = {
             'stream': targets,
