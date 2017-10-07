@@ -23,11 +23,12 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class Min5Cron(webapp2.RequestHandler):
     def get(self):
+        Trending_cron.get()
         freq = CronJobFrequency.query().fetch()
         logging.info("**********crondb"+ str(freq))
         for f in freq:
             if f.frequency == "min5":
-                Trending_cron.get()
+                Trending_cron.send()
 
 app = webapp2.WSGIApplication([
     ('/min5_cron', Min5Cron)
