@@ -49,6 +49,9 @@ class Management(webapp2.RequestHandler):
         target_query = Stream.query(ancestor=user_key(user_obj.email))
         targets = target_query.fetch()
 
+        for i in targets:
+            logging.info("There are %s pics in stream %s " % (i.num_pictures, i.name))
+
         sub_target = []
 
         logging.info("User subscribed for %d of streams" % len(user_obj.subscribe_stream))
@@ -57,7 +60,8 @@ class Management(webapp2.RequestHandler):
             logging.info("Query for %s in stream names" % stream_name)
             stream_query = Stream.query(Stream.name == stream_name)
             # assuming no repeated stream names
-            sub_target.append(stream_query.fetch()[0])
+            if len(stream_query.fetch()) >= 1:
+                sub_target.append(stream_query.fetch()[0])
         for sub in sub_target:
             logging.info("%s" % sub.name)
 
@@ -110,6 +114,11 @@ class Management(webapp2.RequestHandler):
 
         target_query = Stream.query(ancestor=user_key(user_obj.email))
         targets = target_query.fetch()
+
+        for i in targets:
+            logging.info("There are %s pics in stream %s " % (i.num_pictures, i.name))
+
+
         for i in sub_check:
             stream_to_unsub = i.strip('/')
             logging.info("stream to unsub %s" % stream_to_unsub)
@@ -127,7 +136,8 @@ class Management(webapp2.RequestHandler):
             logging.info("Query for %s in stream names" % stream_name)
             stream_query = Stream.query(Stream.name == stream_name)
             # assuming no repeated stream names
-            sub_target.append(stream_query.fetch()[0])
+            if len(stream_query.fetch()) >= 1:
+                sub_target.append(stream_query.fetch()[0])
         for sub in sub_target:
             logging.info("%s" % sub.name)
 

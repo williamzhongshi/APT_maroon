@@ -59,12 +59,12 @@
                     {% for stream in stream %}
                         <div>
                             <div class="col-md-3">
-                                <a href="/view_stream?name={{stream.name}}">{{stream.name}}</a>
+                                <a href="/view_stream?name={{stream.name}}">{{ stream.name }}</a>
                             </div>
                             <div class="col-md-3">
                                 {{stream.last_picture_date}}
                             </div>
-                            <div class="col-md-3">{{stream.num_pictures}}</div>
+                            <div class="col-md-3">{{ stream.num_pictures }}</div>
                             <div class="col-md-3"><input type="checkbox" name="chkDelete" value="{{ stream.name }}"></div>
                         </div>
                     {% endfor %}
@@ -106,12 +106,12 @@
                     <div>
                     {% for stream in stream_subs%}
                             <div class="col-md-3">
-                                <a href="/viewstream/{{stream.name}}">{{ stream.name }}</a>
+                                <a href="/view_stream?name={{stream.name}}">{{ stream.name }}</a>
                             </div>
                             <div class="col-md-3">
                                 {{stream.last_picture_date}}
                             </div>
-                            <div class="col-md-3">{{stream.num_pictures}}</div>
+                            <div class="col-md-3">{{ stream.num_pictures }}</div>
                             <div class="col-md-3"><input type="checkbox" name="sub_chkDelete" id="sub_chkDelete" value="{{ stream.name }}"/></div>
                         </div>
                     {% endfor %}

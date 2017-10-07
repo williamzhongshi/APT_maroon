@@ -121,14 +121,15 @@ class Create_Stream(webapp2.RequestHandler):
 
         logging.info(str(sub_list))
 
-        template_values = {
-            'stream': targets,
-            'stream_subs': sub_list,
-        }
+        # template_values = {
+        #     'stream': targets,
+        #     'stream_subs': sub_list,
+        # }
+        #
+        # template = JINJA_ENVIRONMENT.get_template('management.html')
+        # self.response.write(template.render(template_values))
+        self.redirect("/management")
 
-        template = JINJA_ENVIRONMENT.get_template('management.html')
-        self.response.write(template.render(template_values))
-        
 
 # [START app]
 app = webapp2.WSGIApplication([
