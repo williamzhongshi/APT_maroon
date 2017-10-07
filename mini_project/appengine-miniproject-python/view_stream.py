@@ -79,7 +79,8 @@ class View_Stream(webapp2.RequestHandler):
 
         user_obj = User()
         #user_obj.username = user._User__email
-        user_obj.email = user._User__email
+        if user:
+            user_obj.email = user._User__email
 
         #stream = Stream(parent=user_key(user.email))
         #stream_name = self.request.get('name')
@@ -199,7 +200,9 @@ class Subscribe(webapp2.RequestHandler):
             target.put()
             self.redirect('/view_stream?name=%s' % sub_stream)
         else:
-            err_msg = "You are not logged in. Please login to subscribe."
+            err_msg = "You are not logged in. Please <a href='/'>login</a> to subscribe."
+            self.response.out.write(err_msg)
+            #self.redirect('/view_stream?name=%s' % sub_stream)
 
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
