@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Marker Clustering</title>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="/resources/demos/style.css">
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+     <script>
+
+     var dates_list = {{ dates|safe }}
+
+     for(var i = 0; i < dates_list.length; i++){
+        console.log("date is  " + dates_list[i]);
+     }
+    var date_min = dates_list[0]
+    var date_max = dates_list[dates_list.length-1]
+    var min_date = date_min
+    var max_date = date_max
+
+    console.log("date min is  " + date_min + "date max is " + date_max);
+
+      $( function() {
+        $( "#slider-range" ).slider({
+          range: true,
+          //min: 0,
+          //max: 500,
+          min: date_min, //{{ min_date }},
+          max: date_max+1, //{{ max_date }},
+          values: [ date_min, date_max+1 ],
+          slide: function( event, ui ) {
+            $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+          }
+        });
+        $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+          " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+          <!--window.$vars= {-->
+            min_date = $( "#slider-range" ).slider( "values", 0 ),
+            max_date = $( "#slider-range" ).slider( "values", 1 )
+          <!--};-->
+      } );
+  </script>
+</head>
+  </head>
+  <body>
+    <p>
+        <label for="amount">Price range:</label>
+        <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+    <div id="slider-range"></div>
+    <div id="map"></div>
+
+    <script>
+
+      function initMap() {
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 3,
+              center: {lat: -28.024, lng: 140.887}
+            });
+
+            // Create an array of alphabetical characters used to label the markers.
+            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+            // Add some markers to the map.
+            // Note: The code uses the JavaScript Array.prototype.map() method to
+            // create an array of markers based on a given "locations" array.
+            // The map() method here has nothing to do with the Google Maps API.
+            var markers = locations.map(function(location, i) {
+
+
+            var contentString = '<img src= ' + img_urls[i] + ' style="width:100px;height:100px;">';
+
+            console.log('Showing date range from ' + min_date + ' to ' + max_date)
+
+            var infowindow  = new  google.maps.InfoWindow({
+                content: contentString}
+            );
+
+            var marker = new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length]
+            });
+
+            //infowindow.setContent(contentStrings[i])
+            //console.log("Content string "+contentStrings[i]);
+
+            marker.addListener('mouseover', function(){
+            console.log("Marker over");
+            //infowindow.setContent()
+            infowindow.open(map, marker);
+            });
+
+            marker.addListener('mouseout', function(){
+            console.log("Marker out");
+            infowindow.close(map, marker);
+            });
+
+            return marker
+            });
+
+            // Add a marker clusterer to manage the markers.
+            var markerCluster = new MarkerClusterer(map, markers,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+            }
+
+
+        var locations = []
+        var contentStrings = []
+        var lat_data = {{ lat|safe }};
+        var lng_data = {{ lng|safe }};
+
+        var img_urls = {{ img_urls|safe }};
+
+       for(var i = 0; i < lat_data.length; i++){
+           console.log("lat and lng" + lat_data[i] + lng_data[i])
+           locations.push({lat: lat_data[i], lng: lng_data[i]})
+           console.log("content string: " + img_urls[i])
+
+        }
+
+    </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwzOuYUfAWC6zIcJD0J5SR3j6A6kWprIs&callback=initMap">
+    </script>
+  </body>
+</html>

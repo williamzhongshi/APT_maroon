@@ -59,6 +59,9 @@ handlers:
 - url: /subscribe*
   script: subscribe.app
 
+- url: /geo_view
+  script: geo_view.app
+
 #- url: /blobstore/serviece
 #  script: blob_store_test.app
 # [END handlers]

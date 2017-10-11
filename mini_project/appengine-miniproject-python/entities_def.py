@@ -7,12 +7,13 @@ class Photo(ndb.Model):
     comment = ndb.StringProperty(indexed=False)
     uploaddate = ndb.DateTimeProperty(auto_now_add=True)
     photo_image = ndb.BlobProperty()
-
+    photo_location_lat = ndb.FloatProperty()
+    photo_location_lng = ndb.FloatProperty()
 
 class User(ndb.Expando):
     username = ndb.StringProperty(indexed=True)
     email = ndb.StringProperty(indexed=True)
-    subscribe_stream = ndb.StringProperty(repeated = True)
+    subscribe_stream = ndb.StringProperty(repeated=True)
 
 class Stream(ndb.Model):
     name = ndb.StringProperty(indexed=True)

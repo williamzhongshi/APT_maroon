@@ -29,7 +29,7 @@ from entities_def import User, Photo, Stream
 import jinja2
 import time
 import webapp2
-import logging, pdb
+import logging, pdb, random
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -176,6 +176,8 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                 blob_key=upload.key(),
                 comment=temp_photo_comment,
                 parent=stream_key(temp_stream_name),
+                photo_location_lat=random.uniform(-30.0, 30.0),
+                photo_location_lng=random.uniform(110.0, 130.0)
                 #url=upload.get_serving_url()
             )
             user_photo.put()
