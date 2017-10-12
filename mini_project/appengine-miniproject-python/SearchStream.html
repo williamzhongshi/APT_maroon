@@ -51,11 +51,31 @@
    <!-- End of Header area -->
 
     <div class="container-fluid jumbotron .col-md-offset-* " >
+      <form action="/searchstream" method="post">
+		<div class="container-fluid jumbotron">
+            <!-- Headings-->
+            <p class="col-lg-11" >Search for Streams </p>
+
+             <div >
+                <div >
+                    <div class="col-md-6"><textarea id="search_box" name="txtName" class="input-block-level" rows="1"></textarea></div>
+                     <div class="col-md-6"><input type="submit" value="Search" id="btnSearch"  />&nbsp;</div>
+                    <!--<input type="text" class="form-control" id="txtName"  placeholder="Name your stream" />-->
+                </div>
+            </div>
+        
+
+            <div>
+
+            </div>
+
+
+            </div>
+        </form>
         <div class="main-links">
             <a href="management">Manage</a>
             <a href="create_stream" >Create</a>
             <a href="all_stream" >View</a>
-            <a href="searchstream" >Search</a>
             <a href="trending">Trending</a>
             <a href="geo_view">GeoView</a>
 
@@ -66,25 +86,6 @@
     <div class="container-fluid jumbotron">
                 <!-- Headings-->
                 <p class="col-lg-11" >Search for Streams </p>
-            <form action="/searchstream" method="post">
-                 <div class="form-group">
-                    <div class="col-md-6">
-                        <div><textarea id="search_box" name="txtName" class="input-block-level" rows="1"></textarea></div>
-                        <!--<input type="text" class="form-control" id="txtName"  placeholder="Name your stream" />-->
-                    </div>
-                </div>
-            
- 
-                <div>
-                    <div class="col-md-12">&nbsp;</div>
-                </div>
-
-                           <div>
-                    <div class="col-md-12">
-                        <input type="submit" value="Search" id="btnSearch"  />
-                    </div>
-                </div>
-            </form>
                        
          
         <div class="col-md-12">
