@@ -59,6 +59,9 @@ handlers:
 - url: /subscribe*
   script: subscribe.app
 
+- url: /autocomplete.*  # This regex directs all routes to main.app
+  script: autocomplete.app
+
 - url: /geo_view
   script: geo_view.app
 
@@ -71,5 +74,7 @@ libraries:
 - name: webapp2
   version: latest
 - name: jinja2
+  version: latest
+- name: pycrypto
   version: latest
 # [END libraries]
