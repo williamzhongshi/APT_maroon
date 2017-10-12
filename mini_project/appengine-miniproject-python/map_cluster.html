@@ -23,16 +23,17 @@
     </style>
      <script>
 
+     var sorted_dates = {{ sorted_dates|safe }}
      var dates_list = {{ dates|safe }}
-
      for(var i = 0; i < dates_list.length; i++){
         console.log("date is  " + dates_list[i]);
      }
-    var date_min = dates_list[0]
-    var date_max = dates_list[dates_list.length-1]
+    var date_min = sorted_dates[0]
+    var date_max = sorted_dates[dates_list.length-1]
     var min_date = date_min
     var max_date = date_max
-
+    var min_val = 0
+    var max_val = 0
     console.log("date min is  " + date_min + "date max is " + date_max);
 
       $( function() {
@@ -41,18 +42,22 @@
           //min: 0,
           //max: 500,
           min: date_min, //{{ min_date }},
-          max: date_max+1, //{{ max_date }},
-          values: [ date_min, date_max+1 ],
+          max: date_max, //{{ max_date }},
+          values: [ date_min, date_max ],
           slide: function( event, ui ) {
             $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+          },
+          stop: function( event, ui ) {
+          $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+            min_val = ui.values[ 0 ];
+            max_val = ui.values[ 1 ];
+            console.log("changing to " + min_val + max_val)
+            update_list()
+            initMap()
           }
         });
-        $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-          " - $" + $( "#slider-range" ).slider( "values", 1 ) );
-          <!--window.$vars= {-->
-            min_date = $( "#slider-range" ).slider( "values", 0 ),
-            max_date = $( "#slider-range" ).slider( "values", 1 )
-          <!--};-->
+        $( "#amount" ).val(  $( "#slider-range" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range" ).slider( "values", 1 ) );
       } );
   </script>
 </head>
@@ -66,6 +71,46 @@
     <div id="map"></div>
 
     <script>
+
+        var locations = []
+        var lat_data = {{ lat|safe }};
+        var lng_data = {{ lng|safe }};
+
+        var img_urls = {{ img_urls|safe }};
+        var location_url = []
+
+        for(var i = 0; i < lat_data.length; i++){
+           console.log("lat and lng" + lat_data[i] + lng_data[i]);
+           locations.push({lat: lat_data[i], lng: lng_data[i]});
+           location_url.push(img_urls[i]);
+           console.log("content string: " + img_urls[i]);
+        }
+
+
+        function update_list()
+        {
+            console.log('Showing date range from ' + min_val + ' to ' + max_val)
+
+            console.log("regenerating location lists based on changed time")
+            var temp_loc = []
+            var temp_url = []
+
+            for(var i = 0; i < lat_data.length; i++){
+                console.log("Checking date " + dates_list[i])
+                if( dates_list[i] >= min_val && dates_list[i] <= max_val){
+                   temp_loc.push({lat: lat_data[i], lng: lng_data[i]});
+                   temp_url.push(img_urls[i]);
+                   console.log("lat and lng" + lat_data[i] + lng_data[i]);
+                   console.log("content string: " + img_urls[i]);
+                }
+                else
+                {
+                  console.log('Skipping date stamp  ' + dates_list[i] + 'out of specified range');
+                }
+            }
+            locations = temp_loc;
+            location_url = temp_url;
+        }
 
       function initMap() {
 
@@ -84,9 +129,8 @@
             var markers = locations.map(function(location, i) {
 
 
-            var contentString = '<img src= ' + img_urls[i] + ' style="width:100px;height:100px;">';
+            var contentString = '<img src= ' + location_url[i] + ' style="width:100px;height:100px;">';
 
-            console.log('Showing date range from ' + min_date + ' to ' + max_date)
 
             var infowindow  = new  google.maps.InfoWindow({
                 content: contentString}
@@ -96,9 +140,6 @@
             position: location,
             label: labels[i % labels.length]
             });
-
-            //infowindow.setContent(contentStrings[i])
-            //console.log("Content string "+contentStrings[i]);
 
             marker.addListener('mouseover', function(){
             console.log("Marker over");
@@ -120,19 +161,7 @@
             }
 
 
-        var locations = []
-        var contentStrings = []
-        var lat_data = {{ lat|safe }};
-        var lng_data = {{ lng|safe }};
 
-        var img_urls = {{ img_urls|safe }};
-
-       for(var i = 0; i < lat_data.length; i++){
-           console.log("lat and lng" + lat_data[i] + lng_data[i])
-           locations.push({lat: lat_data[i], lng: lng_data[i]})
-           console.log("content string: " + img_urls[i])
-
-        }
 
     </script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
