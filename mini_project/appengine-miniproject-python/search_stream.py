@@ -88,7 +88,7 @@ class SearchStreams(webapp2.RequestHandler):
             d = search.Document(fields=fields, language='en')
             search.Index(name="search_stream").put(d)
 
-        #index = search.Index()
+        index = search.Index()
 
         #search_results = index.search("%s in name OR %s in tags" % (search_text, search_text))
         search_results = index.search(search_text)
