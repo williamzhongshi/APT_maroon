@@ -8,12 +8,20 @@
     <link rel="stylesheet" href="Content/css/Site.css" />
 
     <!-- Scripts -->
-     <script type="text/javascript" src="Content/js/bootstrap.min.js"></script>   
+     <script type="text/javascript" src="Content/js/bootstrap.min.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.2.0/dropzone.css"></script>
+     <script src="Content/js/dropzone.js"></script>
+
+
+
      <script>
+
+
 		$( function() {
 			var cache = {};
 			$( "#search_box" ).autocomplete({
@@ -31,8 +39,12 @@
 					});
 				}
 			});
-		} );
+
+
+
 	 </script>
+
+
     <!-- End of Scripts -->
 </head>
 <body>
@@ -90,7 +102,7 @@
                     <!--<input type="text" visible="True" value="{{name}}" name="stream_name">-->
 
                     {% for img in photos %}
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <!--<img src="{{ img.url }}"style="width:304px;height:228px;">-->
                             <img src="{{ img }}"style="width:304px;height:228px;">
                             <!--#<img src="{{photos.url}}" />-->
@@ -108,7 +120,7 @@
                     <div class="col-md-2"> -->
 
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-12">
                        <a href="view_stream?name={{ stream_name }}&offset={{ offset }}"><input type="button" id="btnMore" value="More Pictures"/></a>
                     </div>
                 </div>
@@ -153,11 +165,11 @@
                 </form>
             </div>
 -->
-
-            <form action="{{ upload_url }}" method="POST" class="dropzone"  enctype="multipart/form-data">
+        <div class="container-fluid jumbotron" style="border:1px solid #cecece;">
+            <form action="{{ upload_url }}" method="POST" class="dropzone"  enctype="multipart/form-data" id="myDropzone">
                 <input  type="hidden" value="{{ stream_name }}"  name= "stream_name">
             </form>
-
+        </div>
 
       
 </body>
