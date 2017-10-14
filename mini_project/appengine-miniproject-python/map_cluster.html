@@ -65,10 +65,10 @@
           max: date_max, //{{ max_date }},
           values: [ date_min, date_max ],
           slide: function( event, ui ) {
-            $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+            $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
           },
           stop: function( event, ui ) {
-          $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+          $( "#amount" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
             min_val = ui.values[ 0 ];
             max_val = ui.values[ 1 ];
             console.log("changing to " + min_val + max_val)
@@ -116,7 +116,7 @@
         </div>
     </div>
     <p>
-        <label for="amount">Price range:</label>
+        <label for="amount">Date range:</label>
         <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
     </p>
     <div id="slider-range"></div>
