@@ -118,7 +118,7 @@
 
 
     <!-- Begin Subscribe Section -->
-
+<!--
         <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
         <input type="hidden" visible="False" value="{{ stream_name }}"  name= "stream_name">
         <div class="container-fluid jumbotron">
@@ -134,9 +134,9 @@
                          <input type="text" name="txtComments" placeholder="Comments" />
                     </div>
                 <!--<div class="col-md-12">-->
-                    <!--<input type="submit" value="Submit"  name="submit" />-->
+                    <!--<input type="submit" value="Submit"  name="submit" />
                 <!--</div>-->
-                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
+               <!-- <div class="col-md-3"> <input type="file" name="file"><br></div>div>
 
 
                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
@@ -152,6 +152,11 @@
                     <input type="submit" value="Subscribe" id="btnSubscribe" />
                 </form>
             </div>
+-->
+
+            <form action="{{ upload_url }}" method="POST" class="dropzone"  enctype="multipart/form-data">
+                <input  type="hidden" value="{{ stream_name }}"  name= "stream_name">
+            </form>
 
 
       
