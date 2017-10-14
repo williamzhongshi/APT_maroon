@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Marker Clustering</title>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="/resources/demos/style.css">
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script>
+		$( function() {
+			var cache = {};
+			$( "#search_box" ).autocomplete({
+				minLength: 2,
+				source: function( request, response ) {
+					var term = request.term;
+					if ( term in cache ) {
+						response( cache[ term ] );
+						return;
+					}
+
+					$.getJSON( "/autocomplete", request, function( data, status, xhr ) {
+						cache[ term ] = data;
+						response( data );
+					});
+				}
+			});
+		} );
+	 </script>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+     <script>
+
+     var sorted_dates = {{ sorted_dates|safe }}
+     var dates_list = {{ dates|safe }}
+     for(var i = 0; i < dates_list.length; i++){
+        console.log("date is  " + dates_list[i]);
+     }
+    var date_min = sorted_dates[0]
+    var date_max = sorted_dates[dates_list.length-1]
+    var min_date = date_min
+    var max_date = date_max
+    var min_val = 0
+    var max_val = 0
+    console.log("date min is  " + date_min + "date max is " + date_max);
+
+      $( function() {
+        $( "#slider-range" ).slider({
+          range: true,
+          //min: 0,
+          //max: 500,
+          min: date_min, //{{ min_date }},
+          max: date_max, //{{ max_date }},
+          values: [ date_min, date_max ],
+          slide: function( event, ui ) {
+            $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+          },
+          stop: function( event, ui ) {
+          $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+            min_val = ui.values[ 0 ];
+            max_val = ui.values[ 1 ];
+            console.log("changing to " + min_val + max_val)
+            update_list()
+            initMap()
+          }
+        });
+        $( "#amount" ).val(  $( "#slider-range" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range" ).slider( "values", 1 ) );
+      } );
+  </script>
+</head>
+  </head>
+  <body>
+    <div class="container-fluid jumbotron .col-md-offset-* " >
+      <form action="/searchstream" method="post">
+		<div class="container-fluid jumbotron">
+            <!-- Headings-->
+            <p class="col-lg-11" >Search for Streams </p>
+
+             <div >
+                <div >
+                    <div class="col-md-6"><textarea id="search_box" name="txtName" class="input-block-level" rows="1"></textarea></div>
+                     <div class="col-md-6"><input type="submit" value="Search" id="btnSearch"  />&nbsp;</div>
+                    <!--<input type="text" class="form-control" id="txtName"  placeholder="Name your stream" />-->
+                </div>
+            </div>
+        
+
+            <div>
+
+            </div>
+
+
+            </div>
+        </form>
+        <div class="main-links">
+            <a href="management">Manage</a>
+            <a href="create_stream" >Create</a>
+            <a href="all_stream" >View</a>
+            <a href="trending">Trending</a>
+            <a href="geo_view">GeoView</a>
+
+             <a href="#">Social</a>
+        </div>
+    </div>
+    <p>
+        <label for="amount">Price range:</label>
+        <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+    </p>
+    <div id="slider-range"></div>
+    <div id="map"></div>
+
+    <script>
+
+        var locations = []
+        var lat_data = {{ lat|safe }};
+        var lng_data = {{ lng|safe }};
+
+        var img_urls = {{ img_urls|safe }};
+        var location_url = []
+
+        for(var i = 0; i < lat_data.length; i++){
+           console.log("lat and lng" + lat_data[i] + lng_data[i]);
+           locations.push({lat: lat_data[i], lng: lng_data[i]});
+           location_url.push(img_urls[i]);
+           console.log("content string: " + img_urls[i]);
+        }
+
+
+        function update_list()
+        {
+            console.log('Showing date range from ' + min_val + ' to ' + max_val)
+
+            console.log("regenerating location lists based on changed time")
+            var temp_loc = []
+            var temp_url = []
+
+            for(var i = 0; i < lat_data.length; i++){
+                console.log("Checking date " + dates_list[i])
+                if( dates_list[i] >= min_val && dates_list[i] <= max_val){
+                   temp_loc.push({lat: lat_data[i], lng: lng_data[i]});
+                   temp_url.push(img_urls[i]);
+                   console.log("lat and lng" + lat_data[i] + lng_data[i]);
+                   console.log("content string: " + img_urls[i]);
+                }
+                else
+                {
+                  console.log('Skipping date stamp  ' + dates_list[i] + 'out of specified range');
+                }
+            }
+            locations = temp_loc;
+            location_url = temp_url;
+        }
+
+      function initMap() {
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 3,
+              center: {lat: -28.024, lng: 140.887}
+            });
+
+            // Create an array of alphabetical characters used to label the markers.
+            var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+            // Add some markers to the map.
+            // Note: The code uses the JavaScript Array.prototype.map() method to
+            // create an array of markers based on a given "locations" array.
+            // The map() method here has nothing to do with the Google Maps API.
+            var markers = locations.map(function(location, i) {
+
+
+            var contentString = '<img src= ' + location_url[i] + ' style="width:100px;height:100px;">';
+
+
+            var infowindow  = new  google.maps.InfoWindow({
+                content: contentString}
+            );
+
+            var marker = new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length]
+            });
+
+            marker.addListener('mouseover', function(){
+            console.log("Marker over");
+            //infowindow.setContent()
+            infowindow.open(map, marker);
+            });
+
+            marker.addListener('mouseout', function(){
+            console.log("Marker out");
+            infowindow.close(map, marker);
+            });
+
+            return marker
+            });
+
+            // Add a marker clusterer to manage the markers.
+            var markerCluster = new MarkerClusterer(map, markers,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+            }
+
+
+
+
+    </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwzOuYUfAWC6zIcJD0J5SR3j6A6kWprIs&callback=initMap">
+    </script>
+  </body>
+</html>

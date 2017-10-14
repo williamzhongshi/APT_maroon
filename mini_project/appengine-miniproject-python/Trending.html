@@ -11,6 +11,28 @@
      <script type="text/javascript" src="Content/js/bootstrap.min.js"></script>   
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script>
+		$( function() {
+			var cache = {};
+			$( "#search_box" ).autocomplete({
+				minLength: 2,
+				source: function( request, response ) {
+					var term = request.term;
+					if ( term in cache ) {
+						response( cache[ term ] );
+						return;
+					}
+
+					$.getJSON( "/autocomplete", request, function( data, status, xhr ) {
+						cache[ term ] = data;
+						response( data );
+					});
+				}
+			});
+		} );
+	 </script>
     <!-- End of Scripts -->
 </head>
 <body>
@@ -29,12 +51,34 @@
    <!-- End of Header area -->
 
     <div class="container-fluid jumbotron .col-md-offset-* " >
+      <form action="/searchstream" method="post">
+		<div class="container-fluid jumbotron">
+            <!-- Headings-->
+            <p class="col-lg-11" >Search for Streams </p>
+
+             <div >
+                <div >
+                    <div class="col-md-6"><textarea id="search_box" name="txtName" class="input-block-level" rows="1"></textarea></div>
+                     <div class="col-md-6"><input type="submit" value="Search" id="btnSearch"  />&nbsp;</div>
+                    <!--<input type="text" class="form-control" id="txtName"  placeholder="Name your stream" />-->
+                </div>
+            </div>
+        
+
+            <div>
+
+            </div>
+
+
+            </div>
+        </form>
         <div class="main-links">
             <a href="management">Manage</a>
             <a href="create_stream" >Create</a>
             <a href="all_stream" >View</a>
-            <a href="searchstream" >Search</a>
             <a href="trending">Trending</a>
+            <a href="geo_view">GeoView</a>
+
              <a href="#">Social</a>
         </div>
     </div>

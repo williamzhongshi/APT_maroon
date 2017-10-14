@@ -11,6 +11,28 @@
      <script type="text/javascript" src="Content/js/bootstrap.min.js"></script>   
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script>
+		$( function() {
+			var cache = {};
+			$( "#search_box" ).autocomplete({
+				minLength: 2,
+				source: function( request, response ) {
+					var term = request.term;
+					if ( term in cache ) {
+						response( cache[ term ] );
+						return;
+					}
+
+					$.getJSON( "/autocomplete", request, function( data, status, xhr ) {
+						cache[ term ] = data;
+						response( data );
+					});
+				}
+			});
+		} );
+	 </script>
     <!-- End of Scripts -->
 </head>
 <body>
@@ -29,12 +51,35 @@
    <!-- End of Header area -->
 
     <div class="container-fluid jumbotron .col-md-offset-* " >
+      <form action="/searchstream" method="post">
+		<div class="container-fluid jumbotron">
+            <!-- Headings-->
+            <p class="col-lg-11" >Search for Streams </p>
+
+             <div >
+                <div >
+                    <div class="col-md-6"><textarea id="search_box" name="txtName" class="input-block-level" rows="1"></textarea></div>
+                     <div class="col-md-6"><input type="submit" value="Search" id="btnSearch"  />&nbsp;</div>
+                    <!--<input type="text" class="form-control" id="txtName"  placeholder="Name your stream" />-->
+                </div>
+            </div>
+        
+
+            <div>
+
+            </div>
+
+
+            </div>
+        </form>
         <div class="main-links">
             <a href="management">Manage</a>
             <a href="create_stream" >Create</a>
             <a href="all_stream" >View</a>
             <a href="searchstream" >Search</a>
             <a href="trending">Trending</a>
+            <a href="geo_view">GeoView</a>
+
              <a href="#">Social</a>
         </div>
     </div>
@@ -42,18 +87,16 @@
   <div class="container-fluid jumbotron">
                 <!-- Headings-->
                 <div >
+                    <!--<input type="text" visible="True" value="{{name}}" name="stream_name">-->
 
-                <div >
                     {% for img in photos %}
                         <div class="col-md-2">
-                            <img src="{{ img.url }}"style="width:304px;height:228px;">
+                            <!--<img src="{{ img.url }}"style="width:304px;height:228px;">-->
+                            <img src="{{ img }}"style="width:304px;height:228px;">
                             <!--#<img src="{{photos.url}}" />-->
                         </div>
                     {% endfor %}
-                </div>
-
                     <!--<div class="col-md-2">
-
                        <img src="Images/image2.jpg" />
                     </div>
                     <div class="col-md-2">
@@ -62,10 +105,8 @@
                     <div class="col-md-2">
                         <img src="Images/image1.jpg" />
                     </div>
-
                     <div class="col-md-2"> -->
 
-                        &nbsp;
                     </div>
                     <div class="col-md-2">
                        <a href="view_stream?name={{ stream_name }}&offset={{ offset }}"><input type="button" id="btnMore" value="More Pictures"/></a>
@@ -78,8 +119,8 @@
 
     <!-- Begin Subscribe Section -->
 
-        <form id="frmUpload" action="{{ upload_url }}" method="post"  enctype="multipart/form-data" >
-
+        <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
+        <input type="hidden" visible="False" value="{{ stream_name }}"  name= "stream_name">
         <div class="container-fluid jumbotron">
                 
              <P class="col-lg-11" >Add an Image:-</P>
@@ -92,22 +133,27 @@
                     <div class="col-md-3">
                          <input type="text" name="txtComments" placeholder="Comments" />
                     </div>
-                <div class="col-md-3"> <input type="file" name="img"/></div>
-                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
-                </div>
-                <input type="hidden" name="txtStream"  value="{{ stream_name }}" />
+                <!--<div class="col-md-12">-->
+                    <!--<input type="submit" value="Submit"  name="submit" />-->
+                <!--</div>-->
+                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
+
+
+                   <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
+        </div>
+             <input type="hidden" name="txtStream"  value="{{ stream_name }}" />
                 <input type="hidden" name="txtOffset"  value="{{ offset }}" />
         </div>
 
-            <div class="col-md-12">
-                <a href="view_stream/subscribe?stream={{ stream_name }}"><input type="button" value="Subscribe" id="btnSubscribe" /></a>
-            </div>
-
-
         </form>
+            <div class="col-md-12">
+                <form id="frmUpload" action="/subscribe" method="post"  enctype="multipart/form-data" >
+                    <input  type="hidden" value="{{ stream_name }}"  name= "stream_name">
+                    <input type="submit" value="Subscribe" id="btnSubscribe" />
+                </form>
+            </div>
 
 
       
 </body>
 </html>
-

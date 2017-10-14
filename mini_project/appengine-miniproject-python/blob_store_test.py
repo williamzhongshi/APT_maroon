@@ -27,6 +27,7 @@ from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
 import webapp2
 import logging, pdb
+from google.appengine.api import images
 
 
 # This datastore model keeps track of which users uploaded which photos.
@@ -66,6 +67,9 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         try:
             temp_stream_name = "Labrador"
             upload = self.get_uploads()[0]
+
+
+
             # #logging.info("%s", dir(upload))
             # for i in upload:
             #     logging.info("%s", dir(i))
