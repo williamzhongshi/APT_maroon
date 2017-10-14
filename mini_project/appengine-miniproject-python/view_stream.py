@@ -113,7 +113,7 @@ class View_Stream(webapp2.RequestHandler):
                 #logging.info("Image serving url is: %s" % str(i.url))
                 i.put()
 
-        upload_url = blobstore.create_upload_url('/view_stream/upload')
+        upload_url = blobstore.create_upload_url('/uploadfiles/upload')
 
         for target in targets:
             logging.info("image serving url in target is %s" % target.url)
