@@ -65,6 +65,9 @@ handlers:
 - url: /geo_view
   script: geo_view.app
 
+- url: /api/all_stream.*  # This regex directs all routes to main.app
+  script: all_stream_api.app
+
 #- url: /blobstore/serviece
 #  script: blob_store_test.app
 # [END handlers]
