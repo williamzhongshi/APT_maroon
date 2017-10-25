@@ -41,7 +41,7 @@ def get():
     targets = target_query.fetch()
 
     for s in targets:
-        logging.info("*********picture:"+ s.cover_image)
+        logging.info("*********picture:" + s.cover_image)
     re = serializeStream(targets)
 
     return json.dumps(re)
