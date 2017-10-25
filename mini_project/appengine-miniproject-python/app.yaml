@@ -74,6 +74,10 @@ handlers:
 - url: /api/nearby_pictures.*
   script: nearby_pictures_api.app
 
+- url: /uploadfiles.*
+  script: uploadfiles.app
+
+
 #- url: /blobstore/serviece
 #  script: blob_store_test.app
 # [END handlers]

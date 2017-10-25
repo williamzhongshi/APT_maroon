@@ -39,12 +39,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 stream_name = None
 # [END imports]
-def user_key(name):
-    """Constructs a Datastore key for a Guestbook entity.
-    We use guestbook_name as the key.
-    """
-    return ndb.Key('user', name)
-
 
 def stream_key(name):
     """Constructs a Datastore key for a Guestbook entity.
@@ -53,11 +47,12 @@ def stream_key(name):
     return ndb.Key('stream', name)
 
 
-class View_Stream(webapp2.RequestHandler):
+
+class upload(webapp2.RequestHandler):
     def get(self):
         stream_name = self.request.get('name')
 
-        stream = Stream.query(Stream.name==stream_name).fetch()[0]
+        stream = Stream.query(Stream.name == stream_name).fetch()[0]
         offset = self.request.get('offset')
         offset_int = 0
         if offset:
@@ -71,19 +66,16 @@ class View_Stream(webapp2.RequestHandler):
 
         stream.put()
 
-        logging.info("**********stream:"+ str(stream.views_ts))
+        logging.info("**********stream:" + str(stream.views_ts))
 
         user = users.get_current_user()
 
         user_obj = User()
-        #user_obj.username = user._User__email
+        # user_obj.username = user._User__email
         user_obj.email = user._User__email
 
-        #stream = Stream(parent=user_key(user.email))
-        stream_name = self.request.get('name')
-
-        #current_stream = Stream.query(Stream.name == stream_name).fetch()
-        #Update the view count
+        # current_stream = Stream.query(Stream.name == stream_name).fetch()
+        # Update the view count
         logging.info("Stream name: %s" % stream_name)
         target = Stream.query(Stream.name == stream_name).fetch()[0]
 
@@ -102,30 +94,13 @@ class View_Stream(webapp2.RequestHandler):
         if next_:
             offset = offset_int + 3
 
-        for i in targets:
-            blob_info = blobstore.get(i.blob_key)
-            if blob_info:
-                # img = images.Image(blob_key=i.blob_key)
-                # img.resize(width=80, height=100)
-                # img.im_feeling_lucky()
-                i.url = str(images.get_serving_url(i.blob_key))
-                logging.info("Image serving url is: %s" % i.url)
-                #logging.info("Image serving url is: %s" % str(i.url))
-                i.put()
-
         upload_url = blobstore.create_upload_url('/uploadfiles/upload')
 
-        for target in targets:
-            logging.info("image serving url in target is %s" % target.url)
-
         template_values = {
-            'photos': targets,
             'upload_url': upload_url,
-            'stream_name': stream_name,
-            'offset': offset,
-        }
-
-        template = JINJA_ENVIRONMENT.get_template('ViewStream.html')
+            'photos': targets,
+         }
+        template = JINJA_ENVIRONMENT.get_template('upload1.html')
         self.response.write(template.render(template_values))
 
     def __sanitize_str(self, s):
@@ -188,27 +163,11 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             self.response.out.write(e)
             #self.error(500)
 
-class Subscribe(webapp2.RequestHandler):
-    def get(self):
-        sub_stream = self.request.get('stream')
-        user = users.get_current_user()
-
-        # print(user._User__email)
-        if user:
-            target = Stream.query(Stream.name == sub_stream).fetch()[0]
-            id = user.user_id()
-            self.response.out.write(id)
-            target.subscribers.append(id)
-            target.put()
-            self.redirect('/view_stream?name=%s' % sub_stream)
-        else:
-            err_msg = "You are not logged in. Please login to subscribe."
 
 app = webapp2.WSGIApplication([
     # ('/', MainPage),
-    ('/view_stream', View_Stream),
+    ('/upload', upload),
     ('/view_stream/upload', PhotoUploadHandler),
-    ('/view_stream/subscribe', Subscribe),
     # ('/sign', Guestbook),
 ], debug=True)
 
