@@ -31,6 +31,7 @@ import jinja2
 import time
 import webapp2
 import logging, pdb, random
+import json
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -59,9 +60,13 @@ class View_Stream(webapp2.RequestHandler):
 
         stream = Stream.query(Stream.name==stream_name).fetch()[0]
         offset = self.request.get('offset')
+
+
         offset_int = 0
         if offset:
             offset_int = int(offset)
+        else:
+            offset = 0
 
         now = int(time.time())
         if stream.views_ts is None:
@@ -138,6 +143,62 @@ class View_Stream(webapp2.RequestHandler):
         return self.__sanitize_str(subs).split(',')
 
 
+class View_Stream_JSON(webapp2.RequestHandler):
+
+    def get(self):
+        stream_name = self.request.get('name')
+        offset = self.request.get('offset')
+        email = self.request.get('email')
+
+        target = Stream.query(Stream.name == stream_name).fetch()[0]
+
+        offset_int = 0
+        if offset:
+            offset_int = int(offset)
+        else:
+            offset = 0
+
+        now = int(time.time())
+        if target.views_ts is None:
+            target.views_ts = [now]
+        else:
+            target.views_ts.append(now)
+
+        target.put()
+
+        logging.info("****Android***stream:" + str(target.views_ts))
+
+        if target.view_count is None:
+            target.view_count = 0
+        logging.info("Before %d" % target.view_count)
+        target.view_count += 1
+        logging.info("After %d" % target.view_count)
+        target.put()
+
+        targets, next_cursor, more = \
+            Photo.query(ancestor=stream_key(stream_name)).order(-Photo.uploaddate).fetch_page(3, offset=offset_int)
+
+        next_ = True if more else False
+        if next_:
+            offset = offset_int + 6
+
+        url_list = list()
+        for i in targets:
+            blob_info = blobstore.get(i.blob_key)
+            if blob_info:
+                # img = images.Image(blob_key=i.blob_key)
+                # img.resize(width=80, height=100)
+                # img.im_feeling_lucky()
+                i.url = str(images.get_serving_url(i.blob_key))
+                url_list.append(i.url)
+
+        self.response.headers['Content-Type'] = 'application/json'
+        obj = {
+            'offset': offset,
+            'images': url_list
+        }
+        self.response.out.write(json.dumps({"ImgObj":obj }))
+
 class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user = users.get_current_user()
@@ -209,6 +270,7 @@ app = webapp2.WSGIApplication([
     ('/view_stream', View_Stream),
     ('/view_stream/upload', PhotoUploadHandler),
     ('/view_stream/subscribe', Subscribe),
+    ('/view_stream/and_viewpics', View_Stream_JSON),
     # ('/sign', Guestbook),
 ], debug=True)
 
