@@ -197,7 +197,8 @@ class View_Stream_JSON(webapp2.RequestHandler):
             'offset': offset,
             'images': url_list
         }
-        self.response.out.write(json.dumps({"ImgObj":obj }))
+        #self.response.out.write(json.dumps({"ImgObj":obj }))
+        self.response.out.write(json.dumps(url_list))
 
 class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
