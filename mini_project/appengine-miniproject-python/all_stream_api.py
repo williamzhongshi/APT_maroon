@@ -12,6 +12,8 @@ import jinja2
 import webapp2
 import json
 
+from view_stream import user_key
+
 app = Flask(__name__)
  
 def get_char_set(word):
@@ -32,11 +34,14 @@ def serializeStream(stream):
     re['body'] = l
     return re
 
-@app.route('/api/all_stream', methods = ['GET'])
+@app.route('/api/all_stream/<user_email>', methods = ['GET'])
 def get(user_email = None):
     logging.info("Show All Streams!!!")
     # user = users.get_current_user()
-    if user_email is None:
+    logging.info(user_email.encode('utf-8'))
+    logging.info(user_email.decode('utf-8'))
+
+    if user_email.encode('utf-8') == "null":
         target_query = Stream.query()  # .order(-last_picture_date)
         targets = target_query.fetch()
 
@@ -47,7 +52,7 @@ def get(user_email = None):
         return json.dumps(re)
     else:
         logging.info("Getting streams with ancestor email: %s" % user_email)
-        target_query = Stream.query(ancestor=user_email)  # .order(-last_picture_date)
+        target_query = Stream.query(ancestor=user_key(user_email))  # .order(-last_picture_date)
         targets = target_query.fetch()
 
         for s in targets:
