@@ -33,15 +33,25 @@ def serializeStream(stream):
     return re
 
 @app.route('/api/all_stream', methods = ['GET'])
-def get():
+def get(user_email = None):
     logging.info("Show All Streams!!!")
-    user = users.get_current_user()
+    # user = users.get_current_user()
+    if user_email is None:
+        target_query = Stream.query()  # .order(-last_picture_date)
+        targets = target_query.fetch()
 
-    target_query = Stream.query()#.order(-last_picture_date)
-    targets = target_query.fetch()
+        for s in targets:
+            logging.info("*********picture:" + s.cover_image)
+        re = serializeStream(targets)
 
-    for s in targets:
-        logging.info("*********picture:" + s.cover_image)
-    re = serializeStream(targets)
+        return json.dumps(re)
+    else:
+        logging.info("Getting streams with ancestor email: %s" % user_email)
+        target_query = Stream.query(ancestor=user_email)  # .order(-last_picture_date)
+        targets = target_query.fetch()
 
-    return json.dumps(re)
+        for s in targets:
+            logging.info("*********picture:" + s.cover_image)
+        re = serializeStream(targets)
+
+        return json.dumps(re)

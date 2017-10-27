@@ -130,15 +130,15 @@
 
 
     <!-- Begin Subscribe Section -->
-<!--
-        <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
+
+         <form id="frmUpload" action="{{upload_url}}" method="post"  enctype="multipart/form-data" >
         <input type="hidden" visible="False" value="{{ stream_name }}"  name= "stream_name">
         <div class="container-fluid jumbotron">
-                
+
              <P class="col-lg-11" >Add an Image:-</P>
 
             <div>
-                
+
                     <div class="col-md-3">
                         <input type="text" name="txtName" placeholder="File Name"/>
                     </div>
@@ -146,9 +146,9 @@
                          <input type="text" name="txtComments" placeholder="Comments" />
                     </div>
                 <!--<div class="col-md-12">-->
-                    <!--<input type="submit" value="Submit"  name="submit" />
+                    <!--<input type="submit" value="Submit"  name="submit" />-->
                 <!--</div>-->
-               <!-- <div class="col-md-3"> <input type="file" name="file"><br></div>div>
+                <div class="col-md-3"> <input type="file" name="file"><br></div>div>
 
 
                    <div class="col-md-3"><input type="submit" name="submit" value="Submit"></div>
@@ -158,19 +158,20 @@
         </div>
 
         </form>
-            <div class="col-md-12">
-                <form id="frmUpload" action="/subscribe" method="post"  enctype="multipart/form-data" >
-                    <input  type="hidden" value="{{ stream_name }}"  name= "stream_name">
-                    <input type="submit" value="Subscribe" id="btnSubscribe" />
-                </form>
-            </div>
--->
-        <div class="container-fluid jumbotron" style="border:1px solid #cecece;">
-            <form action="{{ upload_url }}" method="POST" class="dropzone"  enctype="multipart/form-data" id="myDropzone">
+
+        <div class="col-md-12">
+            <form id="frmUpload" action="/subscribe" method="post"  enctype="multipart/form-data" >
                 <input  type="hidden" value="{{ stream_name }}"  name= "stream_name">
+                <input type="submit" value="Subscribe" id="btnSubscribe" />
             </form>
         </div>
 
-      
+        <!--<div class="container-fluid jumbotron" style="border:1px solid #cecece;">-->
+            <!--<form action="{{ upload_url }}" method="POST" class="dropzone"  enctype="multipart/form-data" id="myDropzone">-->
+                <!--<input  value="{{ stream_name }}"  name= "stream_name">-->
+            <!--</form>-->
+        <!--</div>-->
+
+
 </body>
 </html>

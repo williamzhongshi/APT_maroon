@@ -103,9 +103,12 @@ class View_Stream(webapp2.RequestHandler):
         targets, next_cursor, more = \
             Photo.query(ancestor=stream_key(stream_name)).order(-Photo.uploaddate).fetch_page(3, offset=offset_int)
 
-        next_ = True if more else False
-        if next_:
-            offset = offset_int + 3
+        target_query = Photo.query(ancestor=stream_key(stream_name))
+        targets = target_query.fetch(4)
+
+        # next_ = True if more else False
+        # if next_:
+        #     offset = offset_int + 3
 
         for i in targets:
             blob_info = blobstore.get(i.blob_key)
@@ -118,7 +121,8 @@ class View_Stream(webapp2.RequestHandler):
                 #logging.info("Image serving url is: %s" % str(i.url))
                 i.put()
 
-        upload_url = blobstore.create_upload_url('/uploadfiles/upload')
+        upload_url = blobstore.create_upload_url('/view_stream/upload')
+        #upload_url = blobstore.create_upload_url('/uploadfiles/upload')
 
         for target in targets:
             logging.info("image serving url in target is %s" % target.url)

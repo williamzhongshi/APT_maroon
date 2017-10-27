@@ -65,7 +65,7 @@ class PhotoUploadFormHandler(webapp2.RequestHandler):
 class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         try:
-            temp_stream_name = "Labrador"
+            temp_stream_name = "cat 8"
             upload = self.get_uploads()[0]
 
 
