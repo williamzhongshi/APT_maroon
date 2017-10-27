@@ -57,6 +57,7 @@ def stream_key(name):
 class View_Stream(webapp2.RequestHandler):
     def get(self):
         stream_name = self.request.get('name')
+        logging.info("**********stream:"+ str(stream_name))
 
         stream = Stream.query(Stream.name==stream_name).fetch()[0]
         offset = self.request.get('offset')
@@ -82,7 +83,8 @@ class View_Stream(webapp2.RequestHandler):
 
         user_obj = User()
         #user_obj.username = user._User__email
-        user_obj.email = user._User__email
+        if user is not None:
+            user_obj.email = user._User__email
 
         #stream = Stream(parent=user_key(user.email))
         stream_name = self.request.get('name')
@@ -216,43 +218,44 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
 
-        try:
-            temp_stream_name = stream_name
-            target = Stream.query(Stream.name == temp_stream_name).fetch()[0]
+        #try:
+        temp_stream_name = stream_name
+        logging.info("####### in upload post :" + temp_stream_name )
+        target = Stream.query(Stream.name == temp_stream_name).fetch()[0]
 
-            temp_photo_name = self.request.get("txtName")
-            temp_photo_comment = self.request.get("txtComments")
-            offset = self.request.get("txtOffset")
-            upload = self.get_uploads()[0]
-            # #logging.info("%s", dir(upload))
-            # for i in upload:
-            #     logging.info("%s", dir(i))
-            #     logging.info("Hello %s", i.key())
-            logging.info("Uploading to stream %s using name %s with comment %s" % (temp_stream_name, temp_photo_name,
-                                                                                   temp_photo_comment))
-            # user_email = users.get_current_user().email()
-            # stream = Stream(parent=user_key(user_email))
+        temp_photo_name = self.request.get("txtName")
+        temp_photo_comment = self.request.get("txtComments")
+        #offset = self.request.get("txtOffset")
+        upload = self.get_uploads()[0]
+        # #logging.info("%s", dir(upload))
+        # for i in upload:
+        #     logging.info("%s", dir(i))
+        #     logging.info("Hello %s", i.key())
+        logging.info("Uploading to stream %s using name %s with comment %s" % (temp_stream_name, temp_photo_name,
+                                                                               temp_photo_comment))
+        # user_email = users.get_current_user().email()
+        # stream = Stream(parent=user_key(user_email))
 
-            logging.info("Before %d" % target.num_pictures)
-            target.num_pictures += 1
-            logging.info("After %d" % target.num_pictures)
-            target.put()
+        logging.info("Before %d" % target.num_pictures)
+        target.num_pictures += 1
+        logging.info("After %d" % target.num_pictures)
+        target.put()
 
-            user_photo = Photo(
-                name=temp_photo_name,
-                blob_key=upload.key(),
-                comment=temp_photo_comment,
-                parent=stream_key(temp_stream_name),
-                photo_location_lat=random.uniform(-30.0, 30.0),
-                photo_location_lng=random.uniform(110.0, 130.0)
-                #url=upload.get_serving_url()
-            )
-            user_photo.put()
-            self.redirect('/view_stream?name=%s' % stream_name)
-        except Exception as e:
-            logging.error(e)
-            self.response.out.write(e)
-            #self.error(500)
+        user_photo = Photo(
+            name=temp_photo_name,
+            blob_key=upload.key(),
+            comment=temp_photo_comment,
+            parent=stream_key(temp_stream_name),
+            photo_location_lat=random.uniform(-30.0, 30.0),
+            photo_location_lng=random.uniform(110.0, 130.0)
+            #url=upload.get_serving_url()
+        )
+        user_photo.put()
+        self.redirect('/view_stream?name=%s' % stream_name)
+#        except Exception as e:
+#            logging.error(e)
+#            self.response.out.write(e)
+#            #self.error(500)
 
 class Subscribe(webapp2.RequestHandler):
     def get(self):

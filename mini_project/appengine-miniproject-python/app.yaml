@@ -77,6 +77,9 @@ handlers:
 - url: /uploadfiles.*
   script: uploadfiles.app
 
+- url: /api/uploadfile.*
+  script: uploadfile_api.app
+
 
 #- url: /blobstore/serviece
 #  script: blob_store_test.app
