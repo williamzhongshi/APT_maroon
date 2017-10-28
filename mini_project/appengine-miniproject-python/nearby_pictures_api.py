@@ -13,6 +13,7 @@ from math import sin, cos, sqrt, atan2, radians
 import jinja2
 import webapp2
 import json
+from view_stream import stream_key
 
 app = Flask(__name__)
 
@@ -23,6 +24,8 @@ def serializePhoto(photos):
         item = {}
         item['name'] = s.name
         item['url'] = s.url
+        item['distance'] = s.distance
+        item['parent'] = s.parent
         l.append(item)
     re['body'] = l
     return re
@@ -80,7 +83,31 @@ def post(position = None):
             photo_location_lng = 0
         else:
             photo_location_lng = target.photo_location_lng
-        photos_list.append((calculate_distance(lat, lng, photo_location_lat, photo_location_lng), target))
+	    distance = calculate_distance(lat, lng, photo_location_lat, photo_location_lng)
+
+	    stream_query = Stream.query()
+	    streams = stream_query.fetch()
+	    # tmp_stream
+	    tmp_stream = streams[0]
+	    for s in streams:
+		logging.info("Looking in Stream %s " % s.name)
+		photo_query = Photo.query(ancestor=stream_key(s.name))
+		photos = photo_query.fetch()
+		for i in photos:
+		    logging.info("photo %s %s" % (i.name, target.name))
+		if target in photos:
+		    logging.info("Found!!!!!! %s " % target.name)
+		    tmp_stream = s
+		    break
+
+	    target.parent = target.key.parent().get()
+	    #logging.info("target %s" % dir(target))
+	    target.distance = distance
+	    # target.parent_name = Stream.query(children=target.key.parent()).fetch()[0].name
+	    logging.info("target distance %s" % target.distance)
+	    logging.info("target parent %s" % tmp_stream.name)
+	    photos_list.append((distance, target))
+
 
     photos_list = sorted(photos_list)
 
