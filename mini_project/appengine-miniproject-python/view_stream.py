@@ -155,6 +155,7 @@ class View_Stream_JSON(webapp2.RequestHandler):
         stream_name = self.request.get('name')
         offset = self.request.get('offset')
         email = self.request.get('email')
+        logging.info("stream:" + stream_name)
 
         target = Stream.query(Stream.name == stream_name).fetch()[0]
 
@@ -182,11 +183,11 @@ class View_Stream_JSON(webapp2.RequestHandler):
         target.put()
 
         targets, next_cursor, more = \
-            Photo.query(ancestor=stream_key(stream_name)).order(-Photo.uploaddate).fetch_page(3, offset=offset_int)
+            Photo.query(ancestor=stream_key(stream_name)).order(-Photo.uploaddate).fetch_page(offset=offset_int)
 
         next_ = True if more else False
         if next_:
-            offset = offset_int + 6
+            offset = offset_int + 16
 
         url_list = list()
         for i in targets:
@@ -227,6 +228,8 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
         temp_photo_comment = self.request.get("txtComments")
         #offset = self.request.get("txtOffset")
         upload = self.get_uploads()[0]
+        photo_location_lat = float(self.request.get("latitude"))
+        photo_location_lng = float(self.request.get("longitude"))
         # #logging.info("%s", dir(upload))
         # for i in upload:
         #     logging.info("%s", dir(i))
@@ -246,8 +249,8 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             blob_key=upload.key(),
             comment=temp_photo_comment,
             parent=stream_key(temp_stream_name),
-            photo_location_lat=random.uniform(-30.0, 30.0),
-            photo_location_lng=random.uniform(110.0, 130.0)
+            photo_location_lat=photo_location_lat,
+            photo_location_lng=photo_location_lng,
             #url=upload.get_serving_url()
         )
         user_photo.put()

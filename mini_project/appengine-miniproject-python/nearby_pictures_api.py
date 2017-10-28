@@ -13,6 +13,7 @@ from math import sin, cos, sqrt, atan2, radians
 import jinja2
 import webapp2
 import json
+
 from view_stream import stream_key
 
 app = Flask(__name__)
@@ -72,9 +73,17 @@ def post(position = None):
 
     photos_list = []
 
+
     target_query = Photo.query()
     targets = target_query.fetch()
+
+    logging.info("Found %d of photos" % len(targets))
+    stream_query = Stream.query()
+    streams = stream_query.fetch()
     for target in targets:
+
+        # logging.info("LOOKING FOR %s " % target.name)
+
         if target.photo_location_lat is None:
             photo_location_lat = 0
         else:
@@ -83,31 +92,33 @@ def post(position = None):
             photo_location_lng = 0
         else:
             photo_location_lng = target.photo_location_lng
-	    distance = calculate_distance(lat, lng, photo_location_lat, photo_location_lng)
+        distance = calculate_distance(lat, lng, photo_location_lat, photo_location_lng)
 
-	    stream_query = Stream.query()
-	    streams = stream_query.fetch()
-	    # tmp_stream
-	    tmp_stream = streams[0]
-	    for s in streams:
-		logging.info("Looking in Stream %s " % s.name)
-		photo_query = Photo.query(ancestor=stream_key(s.name))
-		photos = photo_query.fetch()
-		for i in photos:
-		    logging.info("photo %s %s" % (i.name, target.name))
-		if target in photos:
-		    logging.info("Found!!!!!! %s " % target.name)
-		    tmp_stream = s
-		    break
 
-	    target.parent = target.key.parent().get()
-	    #logging.info("target %s" % dir(target))
-	    target.distance = distance
-	    # target.parent_name = Stream.query(children=target.key.parent()).fetch()[0].name
-	    logging.info("target distance %s" % target.distance)
-	    logging.info("target parent %s" % tmp_stream.name)
-	    photos_list.append((distance, target))
-
+        # tmp_stream
+        tmp_stream = streams[0]
+        found = False
+        for stream in streams:
+            # logging.info("Looking in Stream %s " % stream.name)
+            photo_query = Photo.query(ancestor=stream_key(stream.name))
+            photos = photo_query.fetch()
+            # for p in photos:
+            #     logging.info("photo %s %s" % (p.name, target.name))
+            if target in photos:
+                # logging.info("Found!!!!!! %s " % target.name)
+                tmp_stream = stream
+                found = True
+                break
+        if found == False:
+            logging.info("Photo not in any streams %s " % target.name)
+        # target.parent = target.key.parent().get()
+        #logging.info("target %s" % dir(target))
+        target.distance = distance
+        # target.parent_name = Stream.query(children=target.key.parent()).fetch()[0].name
+        logging.info("target distance %s" % target.distance)
+        logging.info("target parent %s" % tmp_stream.name)
+        target.parent = tmp_stream.name
+        photos_list.append((distance, target))
 
     photos_list = sorted(photos_list)
 
