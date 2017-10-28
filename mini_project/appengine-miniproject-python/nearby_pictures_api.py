@@ -23,6 +23,7 @@ def serializePhoto(photos):
         item = {}
         item['name'] = s.name
         item['url'] = s.url
+        item['distance'] = s.distance
         l.append(item)
     re['body'] = l
     return re
@@ -80,7 +81,11 @@ def post(position = None):
             photo_location_lng = 0
         else:
             photo_location_lng = target.photo_location_lng
-        photos_list.append((calculate_distance(lat, lng, photo_location_lat, photo_location_lng), target))
+        distance = calculate_distance(lat, lng, photo_location_lat, photo_location_lng)
+        target.distance = distance
+        logging.info("target %s" % dir(target))
+        logging.info("target distance %s" % target.distance)
+        photos_list.append((distance, target))
 
     photos_list = sorted(photos_list)
 
