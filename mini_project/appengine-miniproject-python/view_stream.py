@@ -103,12 +103,12 @@ class View_Stream(webapp2.RequestHandler):
         targets, next_cursor, more = \
             Photo.query(ancestor=stream_key(stream_name)).order(-Photo.uploaddate).fetch_page(3, offset=offset_int)
 
-        target_query = Photo.query(ancestor=stream_key(stream_name))
-        targets = target_query.fetch(4)
+        # target_query = Photo.query(ancestor=stream_key(stream_name))
+        # targets = target_query.fetch(4)
 
-        # next_ = True if more else False
-        # if next_:
-        #     offset = offset_int + 3
+        next_ = True if more else False
+        if next_:
+            offset = offset_int + 3
 
         for i in targets:
             blob_info = blobstore.get(i.blob_key)
@@ -121,8 +121,8 @@ class View_Stream(webapp2.RequestHandler):
                 #logging.info("Image serving url is: %s" % str(i.url))
                 i.put()
 
-        upload_url = blobstore.create_upload_url('/view_stream/upload')
-        #upload_url = blobstore.create_upload_url('/uploadfiles/upload')
+        #upload_url = blobstore.create_upload_url('/view_stream/upload')
+        upload_url = blobstore.create_upload_url('/uploadfiles/upload')
 
         for target in targets:
             logging.info("image serving url in target is %s" % target.url)
@@ -208,6 +208,7 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user = users.get_current_user()
         stream_name = self.request.get('stream_name')
+        logging.info("LOL stream name: %s " % stream_name)
         # print(user._User__email)
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -224,6 +225,9 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             temp_photo_comment = self.request.get("txtComments")
             offset = self.request.get("txtOffset")
             upload = self.get_uploads()[0]
+            photo_location_lat = self.request.get("latitude")
+            photo_location_lng = self.request.get("longitude")
+
             # #logging.info("%s", dir(upload))
             # for i in upload:
             #     logging.info("%s", dir(i))
@@ -243,8 +247,8 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
                 blob_key=upload.key(),
                 comment=temp_photo_comment,
                 parent=stream_key(temp_stream_name),
-                photo_location_lat=random.uniform(-30.0, 30.0),
-                photo_location_lng=random.uniform(110.0, 130.0)
+                photo_location_lat=photo_location_lat,
+                photo_location_lng=photo_location_lng
                 #url=upload.get_serving_url()
             )
             user_photo.put()
@@ -253,6 +257,16 @@ class PhotoUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
             logging.error(e)
             self.response.out.write(e)
             #self.error(500)
+
+
+class UploadUrl_JSON(webapp2.RequestHandler):
+    def get(self):
+        upload_url = blobstore.create_upload_url('/view_stream/upload')
+        self.response.headers['Content-Type'] = 'application/json'
+        obj = {
+            'url': upload_url
+        }
+        self.response.out.write(json.dumps({"objUrl": obj}))
 
 class Subscribe(webapp2.RequestHandler):
     def get(self):
@@ -276,6 +290,7 @@ app = webapp2.WSGIApplication([
     ('/view_stream/upload', PhotoUploadHandler),
     ('/view_stream/subscribe', Subscribe),
     ('/view_stream/and_viewpics', View_Stream_JSON),
+    ('/view_stream/and_getURL', UploadUrl_JSON),
     # ('/sign', Guestbook),
 ], debug=True)
 
