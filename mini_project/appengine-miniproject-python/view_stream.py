@@ -153,6 +153,7 @@ class View_Stream_JSON(webapp2.RequestHandler):
         stream_name = self.request.get('name')
         offset = self.request.get('offset')
         email = self.request.get('email')
+        logging.info("stream:" + stream_name)
 
         target = Stream.query(Stream.name == stream_name).fetch()[0]
 

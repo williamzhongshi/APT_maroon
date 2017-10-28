@@ -107,9 +107,8 @@ def post(position = None):
                 tmp_stream = s
                 break
 
-        target.parent = target.key.parent().get()
-        #logging.info("target %s" % dir(target))
         target.distance = distance
+        target.parent = tmp_stream.name
         # target.parent_name = Stream.query(children=target.key.parent()).fetch()[0].name
         logging.info("target distance %s" % target.distance)
         logging.info("target parent %s" % tmp_stream.name)
